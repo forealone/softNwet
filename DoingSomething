@@ -1,0 +1,90 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Nov  3 19:48:21 2019
+
+@author: asus
+"""
+
+import random
+
+#定义洗牌函数
+def shuffle():
+    global deck
+    global maxcards
+    deck = ['A','A','A','A',2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6,7,7,7,7,8,8,8,8,9,9,9,9,
+            10,10,10,10,'J','J','J','J','Q','Q','Q','Q','K','K','K','K']
+    n=0
+    while n<=2:
+        deck.extend(deck)
+        n = n+1
+    maxcards = len(deck)
+
+#定义发牌函数
+def draw4card():
+    def drawcard():
+        global maxcards
+        x = random.randint(0,maxcards-1)
+        card = deck[x]
+        maxcards = maxcards - 1
+        deck.pop(x)
+        return card
+    global player_card1
+    global banker_card1
+    global player_card2
+    global banker_card2
+    player_card1 = drawcard()
+    banker_card1 = drawcard()
+    player_card2 = drawcard()
+    banker_card2 = drawcard()
+    print('庄家%s&%s VS 闲家%s&%s' %(banker_card1,banker_card2,player_card1,player_card2))
+    print('当前8副牌还剩余%s张' %maxcards)
+    if maxcards <=6:
+        shuffle()
+        print('8副牌已发完，重新洗牌')
+
+#定义比大小函数
+def compare():
+    global banker
+    global player
+    while banker >= 10:
+        banker = banker - 10
+    while player >= 10:
+        player = player - 10
+    if banker > player:
+        print('庄家%s VS 闲家%s，庄家赢' %(banker,player))
+    elif banker < player:
+        print('庄家%s VS 闲家%s，闲家赢' %(banker,player))
+    else:
+        print('庄家%s VS 闲家%s，平局' %(banker,player))
+
+#定义卡牌数字转换
+def convert(card):
+    if card == 'K':
+        card_num = 0
+        return card_num
+    elif card =='Q':
+        card_num = 0
+        return card_num
+    elif card =='J':
+        card_num = 0
+        return card_num
+    elif card =='A':
+        card_num = 1
+        return card_num
+    else:
+        card_num = card
+        return card_num
+
+
+#洗牌，游戏开始
+shuffle()
+
+#发牌
+draw4card()
+
+
+#比大小
+banker = convert(banker_card1)+convert(banker_card2)
+player = convert(player_card1)+convert(player_card2)
+compare()
+
