@@ -323,3 +323,4 @@ label14 = tk.Label(window, textvariable=var14, font=('宋体', 9), bg='green', f
 label14.pack()
 
 window.mainloop()
+
