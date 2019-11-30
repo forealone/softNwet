@@ -31,11 +31,23 @@ photo = ImageTk.PhotoImage(img)
 
 b1_canvas = tk.Canvas(frame_l, bg='green', height=192, width=139)
 b2_canvas = tk.Canvas(frame_r, bg='green', height=192, width=139)
+test1_canvas = tk.Canvas(window, bg='green', height=192, width=139)
+test2_canvas = tk.Canvas(window, bg='green', height=192, width=139)
+test3_canvas = tk.Canvas(window, bg='green', height=192, width=139)
+test4_canvas = tk.Canvas(window, bg='green', height=192, width=139)
 
-image = b1_canvas.create_image(142, 0, anchor='ne', image=photo)  # 图片锚定点（图片顶端的中间点位置）放在画布（250,0）坐标处
-image = b2_canvas.create_image(142, 0, anchor='ne', image=photo)  # 图片锚定点（图片顶端的中间点位置）放在画布（250,0）坐标处
+image = b1_canvas.create_image(142, 0, anchor='ne', image=photo)  
+image = b2_canvas.create_image(142, 0, anchor='ne', image=photo)  
+image = test1_canvas.create_image(142, 0, anchor='ne', image=photo)  
+image = test2_canvas.create_image(142, 0, anchor='ne', image=photo)  
+image = test3_canvas.create_image(142, 0, anchor='ne', image=photo)  
+image = test4_canvas.create_image(142, 0, anchor='ne', image=photo)  
 
 b1_canvas.pack()
 b2_canvas.pack()
+test1_canvas.pack(side='left')
+test2_canvas.pack(side='left')
+test3_canvas.pack(side='right')
+test4_canvas.pack(side='right')
 
 window.mainloop()
