@@ -5,6 +5,7 @@ Created on Wed Nov 27 08:59:33 2019
 @author: User
 """
 
+input('即将对集团和证券公司干部信息明细表进行格式美化，按回车键继续...')
 
 from openpyxl import load_workbook
 from openpyxl.styles import Font, NamedStyle
@@ -51,5 +52,7 @@ for r in range(1, rows+1):
             ws.cell(r, c).style = sty1
         else:
             ws.cell(r, c).style = sty2
-            
-wb.save(r'C:\Users\User\Desktop\干部信息明细表（编辑2）.xlsx')
+
+print('E:\\1-统计\\%s\\raw\\' %date)
+input('将输出文件至上述目录，按回车键继续...')
+wb.save(r'E:\1-统计\%s\raw\干部信息明细表（编辑2）.xlsx' %date)

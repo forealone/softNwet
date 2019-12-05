@@ -69,10 +69,10 @@ text = [('2019年以来至本月底，共调整干部%s人。' %jtzq_total),
 text_output = pd.DataFrame(text)
 
 date = input('输入月度统计表的统计年月，用于命名导出文件，(格式：YYYYMM):')
-print('E:\\组织部共享\\干部结构统计表\\本年度干部变动统计-截止%s.xlsx \n' %date)
+print('E:\\1-统计\\%s\\raw\\' %date)
 input('将输出文件至上述目录，按回车键继续...')
 
-pt_output = pd.ExcelWriter(r'E:\组织部共享\干部结构统计表\本年度干部变动统计-截止%s.xlsx' %date)
+pt_output = pd.ExcelWriter(r'E:\1-统计\%s\raw\本年度干部变动统计-截止本月.xlsx' %date)
 data.to_excel(pt_output, sheet_name='干部变动明细', index=False)
 pivot_table.to_excel(pt_output, sheet_name='透视图')
 text_output.to_excel(pt_output, sheet_name='文字描述', index=False)
