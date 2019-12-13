@@ -174,8 +174,36 @@ pt_merge5 = pt_merge5.reindex(row)  #行索引排序（干部类型）
 col = ['人数','男','女','中共党员','民主党派','群众','博士研究生','硕士研究生','大学本科','大学专科及以下','35岁及以下','36-45岁','45岁以上','平均年龄']
 pt_merge5 = pt_merge5.reindex(columns=col)  #列索引排序
 
-pt_merge6 = pd.concat([pt_merge4,pt_merge5], axis=0, ignore_index=False, sort=False)
+pt_merge5 = pd.concat([pt_merge4,pt_merge5], axis=0, ignore_index=False, sort=False)
+pt_merge5.fillna(0,inplace=True)
+
+#第五张表（按每个部门统计性别、政治面貌、学历、年龄）
+pt_xb6 = pd.pivot_table(p_data,index=['组织','一级部门'],columns=['性别'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
+pt_zzmm6 = pd.pivot_table(p_data,index=['组织','一级部门'],columns=['政治面貌分类'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
+pt_zgxl6 = pd.pivot_table(p_data,index=['组织','一级部门'],columns=['最高学历'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
+pt_nljg6 = pd.pivot_table(p_data,index=['组织','一级部门'],columns=['年龄段'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
+pt_pjnl6 = pd.pivot_table(p_data,index=['组织','一级部门'],values=['年龄'],aggfunc={'年龄':np.mean}, fill_value=0, margins=True)
+pt_pjnl6.rename(columns={'年龄':'平均年龄'},inplace=True)
+
+pt_xb6.columns.levels[1]  #透视表第二列索引
+pt_xb6.columns = pt_xb6.columns.droplevel(level=0)  #删除透视表第一列索引
+pt_zzmm6.columns = pt_zzmm6.columns.droplevel(level=0)
+pt_zgxl6.columns = pt_zgxl6.columns.droplevel(level=0)
+pt_nljg6.columns = pt_nljg6.columns.droplevel(level=0)
+del pt_zzmm6['All']
+del pt_zgxl6['All']
+del pt_nljg6['All']
+
+pt_merge6 = pd.merge(pt_xb6,pt_zzmm6,how='left',left_index=True,right_index=True)
+pt_merge6 = pd.merge(pt_merge6,pt_zgxl6,how='left',left_index=True,right_index=True)
+pt_merge6 = pd.merge(pt_merge6,pt_nljg6,how='left',left_index=True,right_index=True)
+pt_merge6 = pd.merge(pt_merge6,pt_pjnl6,how='left',left_index=True,right_index=True)
+
 pt_merge6.fillna(0,inplace=True)
+pt_merge6.rename(columns={'All':'干部人数'}, index={'All':'合计'}, inplace=True)
+#pt_merge6 = pt_merge6.reindex(row)  #行索引排序
+col = ['干部人数','男','女','中共党员','民主党派','群众','博士研究生','硕士研究生','大学本科','大学专科及以下','35岁及以下','36-45岁','45岁以上','平均年龄']
+pt_merge6 = pt_merge6.reindex(columns=col)  #列索引排序
 
 #输出(注意每月修改日期)
 print('E:\\1-统计\\%s\\raw\\' %date)
@@ -184,7 +212,8 @@ pt_output = pd.ExcelWriter(r'E:\1-统计\%s\raw\干部信息统计汇总表.xls'
 pt_merge.to_excel(pt_output, sheet_name='按干部类型')
 pt_merge2.to_excel(pt_output, sheet_name='按总部级干部类别')
 pt_merge3.to_excel(pt_output, sheet_name='按部门类别')
-pt_merge6.to_excel(pt_output, sheet_name='按公司领导类别')
+pt_merge5.to_excel(pt_output, sheet_name='按公司领导类别')
+pt_merge6.to_excel(pt_output, sheet_name='按一级部门')
 pt_output.save()
 
 '''
