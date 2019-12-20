@@ -201,7 +201,8 @@ pt_merge6 = pd.merge(pt_merge6,pt_pjnl6,how='left',left_index=True,right_index=T
 
 pt_merge6.fillna(0,inplace=True)
 pt_merge6.rename(columns={'All':'干部人数'}, index={'All':'合计'}, inplace=True)
-#pt_merge6 = pt_merge6.reindex(row)  #行索引排序
+#pt_merge6.index
+#pt_merge6 = pt_merge6.reindex(row)  #行索引排序 multiindex的情况如何排序？
 col = ['干部人数','男','女','中共党员','民主党派','群众','博士研究生','硕士研究生','大学本科','大学专科及以下','35岁及以下','36-45岁','45岁以上','平均年龄']
 pt_merge6 = pt_merge6.reindex(columns=col)  #列索引排序
 
