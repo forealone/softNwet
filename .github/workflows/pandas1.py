@@ -11,7 +11,7 @@ import pandas as pd  #pandas数据处理模块，pd是别名
 #导入(注意每月修改日期)
 date = input('输入月度统计表的年月，(格式：YYYYMM):')
 print('E:\\1-统计\\%s\\raw\\ \n' %date)
-input('请检查文件目录是否正确，确保目录下有以下两个文件：\n 证券公司《干部信息明细表（含分子公司）》 \n 集团公司《干部信息明细表（集团模板201911）.xlsx》\n 按回车键继续...')
+input('请检查文件目录是否正确，确保目录下有以下两个文件：\n 证券公司“干部信息明细表（含分子公司）” \n 集团公司“干部信息明细表（集团模板201911）.xlsx”\n 按回车键继续...')
 
 cadre_data_io = pd.io.excel.ExcelFile(r'E:\1-统计\%s\raw\干部信息明细表（含分子公司）.xls' %date)
 cadre_data = pd.read_excel(cadre_data_io,sheet_name='Sheet0')
@@ -95,17 +95,13 @@ print('郭纯体现申万宏源（香港）有限公司副董事长 \n')
 input('按回车确认修改... \n')
 cadre_data.loc[cadre_data[cadre_data['人员姓名']=='郭纯'].index,['组织','一级部门','部门名称']] = ['非一体化管控子公司','申万宏源（香港）有限公司','申万宏源（香港）有限公司']
 
-print('尚恒体现申银万国期货有限公司监事长 \n')
+print('尚恒体现申银万国期货有限公司监事长，202001证券公司已做离职，记得请期货公司做入职 \n')
 input('按回车确认修改... \n')
 cadre_data.loc[cadre_data[cadre_data['人员姓名']=='尚恒'].index,['组织','一级部门','部门名称']] = ['非一体化管控子公司','申银万国期货有限公司','申银万国期货有限公司']
 
-print('施昕体现申银万国期货有限公司纪委书记 \n')
+print('施昕体现申银万国期货有限公司纪委书记，202001证券公司已做离职，记得请期货公司做入职 \n')
 input('按回车确认修改... \n')
 cadre_data.loc[cadre_data[cadre_data['人员姓名']=='施昕'].index,['组织','一级部门','部门名称']] = ['非一体化管控子公司','申银万国期货有限公司','申银万国期货有限公司']
-
-print('来肖贤体现证券公司零售客户事业部总部总经理级职务（2019.12） \n')
-input('按回车确认修改... \n')
-cadre_data.loc[cadre_data[cadre_data['人员姓名']=='来肖贤'].index,['组织','一级部门','部门名称']] = ['申万宏源证券有限公司','零售客户事业部','零售客户事业部']
 
 #贺添
 print('香港公司干部贺添是经过公司党委面试和任命的干部，但是信息在人力系统中没有，为其手动添加一条记录 \n')
@@ -115,7 +111,7 @@ cadre_data = cadre_data.append(insertrow1,ignore_index=True,sort=False)
 
 #集团公司干部拼表(注意修改日期)
 print('\n 即将把集团公司干部信息拼入表格，请确保以下目录正确、集团公司干部信息表存在')
-print('E:\1-统计\%s\raw\干部信息明细表（集团模板201911）.xlsx' %date)
+print('E:\\1-统计\\%s\\raw\\干部信息明细表（集团模板201911）.xlsx' %date)
 input('请按回车键继续... \n')
 group_cadre_data = pd.read_excel(r'E:\1-统计\%s\raw\干部信息明细表（集团模板201911）.xlsx' %date, skiprows=1, sheet_name='Sheet1')
 '''
@@ -126,8 +122,8 @@ p_data.reset_index(drop=True, inplace=True)
 '''
 
 #计数
-num_group_cadre = len(group_cadre_data['工号'].drop_duplicates())
-count_group_cadre = group_cadre_data['工号'].count()
+num_group_cadre = len(group_cadre_data['人员工号'].drop_duplicates())
+count_group_cadre = group_cadre_data['人员工号'].count()
 if num_group_cadre == count_group_cadre:
     print('已检查：集团公司干部人数 %d 人（一人一条记录） \n' %(num_group_cadre))
 else:
@@ -156,7 +152,7 @@ cadre_data.loc[cadre_data[(cadre_data['年龄']>45)].index,['年龄段']] = '45�
 
 #拼考核结果(注意每年更新考核结果，修改日期)
 print('\n 即将匹配近两年考核结果，请确保以下目录正确、近两年考核结果汇总存在')
-print('E:\2-年度考核\历年考核结果\2017考核结果汇总.xlsx \n E:\2-年度考核\历年考核结果\2018考核结果汇总.xlsx')
+print('E:\\2-年度考核\\历年考核结果\\2017考核结果汇总.xlsx \n E:\\2-年度考核\\历年考核结果\\2018考核结果汇总.xlsx')
 input('请按回车键继续... \n')
 eva_2017 = pd.read_excel(r'E:\2-年度考核\历年考核结果\2017考核结果汇总.xlsx',sheet_name='干部员工')
 eva_2018 = pd.read_excel(r'E:\2-年度考核\历年考核结果\2018考核结果汇总.xlsx',sheet_name='干部员工')
@@ -198,7 +194,7 @@ cadre_data.loc[cadre_data[cadre_data['组织'] == '非一体化管控子公司']
 
 
 #部门类别（总部业务部门、总部职能部门、总部党群部门、分公司、子公司、营业部）——未独立履职分公司计入营业部，根据实际情况随时调整
-cadre_data['部门类别'] = '其他'
+cadre_data['部门类别'] = '其他' #先全部设定为“其他”，按照以下的逻辑，新增/更名的部门，以及非行政职务的干部，其部门类别会设定为“其他”
 cadre_data.loc[cadre_data[cadre_data['一级部门'].str.contains('零售客户事业部|机构客户事业部|投资交易事业部|国际业务总部|资产管理事业部|固定收益交易总部|固定收益外汇商品事业部（FICC事业部）|固定收益销售交易总部|固定收益融资总部|场外市场总部|承销保荐|多元金融部|投资管理部|产业投资管理子公司')].index,['部门类别']] = '总部业务部门'
 cadre_data.loc[cadre_data[cadre_data['一级部门'].str.contains('监事会办公室|办公室|党委组织部/人力资源总部|计划财务管理总部|董事会办公室|法律合规总部|风险管理总部|内核评审总部|风险资产处置办公室|信息技术保障总部|信息技术开发总部|信息技术架构组|稽核审计总部|运营中心|托管中心|战略规划总部|战略客户部|资金营运总部|其他|计划财务部|人力资源部|战略管理部|总经理办公室|稽核审计部|法务风控部')].index,['部门类别']] = '总部职能部门'
 cadre_data.loc[cadre_data[cadre_data['一级部门'].str.contains('扶贫办公室|纪检监察室|纪律检查室|党委办公室|党委巡视办公室|工会办公室|团委办公室')].index,['部门类别']] = '总部党群部门'
@@ -206,6 +202,7 @@ cadre_data.loc[cadre_data[(cadre_data['一级部门'].str.contains('分公司'))
 cadre_data.loc[cadre_data[cadre_data['组织'] == '非一体化管控子公司'].index,['部门类别']] = '子公司'
 cadre_data.loc[cadre_data[cadre_data['一级部门'].str.contains('营业部|河北分公司|内蒙古分公司|山西分公司|云南分公司|宁夏分公司')].index,['部门类别']] = '营业部'
 cadre_data.loc[cadre_data[cadre_data['一级部门'] == '公司领导'].index,['部门类别']] = '公司领导'
+cadre_data.loc[cadre_data[cadre_data['干部类型'] == '非行政职务'].index,['部门类别']] = '其他'
 
 #公司领导类别（党委班子）（证券经营班子、集团经营班子）——根据实际情况随时调整
 cadre_data['公司领导类别1'] = None
@@ -214,7 +211,7 @@ cadre_data['公司领导类别2'] = None
 cadre_data.loc[cadre_data[(cadre_data['人员姓名'].isin(['阳昌云','刘跃'])) & (cadre_data['一级部门']=='公司领导')].index,['公司领导类别2']] = '集团公司经营班子'
 cadre_data.loc[cadre_data[(cadre_data['人员姓名'].isin(['杨玉成','徐志斌','方荣义','朱敏杰','任全胜','薛军','陈晓升','谢晨','张克均','张剑'])) & (cadre_data['一级部门']=='公司领导')].index,['公司领导类别2']] = '证券公司经营班子'
 
-#拆分重组与排序
+#拆分重组与排序 ——根据实际情况随时调整
 list_sorted = ['储晓明','杨玉成','冯戎','杨文清','陈亮','徐宜阳','徐志斌','方荣义','阳昌云','朱敏杰','徐际国','任全胜','薛军','陈晓升','刘跃','谢晨','张克均','张剑','徐亮','何沙','车作斌','李雪峰']  #按实际情况修改
 list_sorted2 = ['公司正职','公司副职','公司助理','公司总监','总部正职','总部副职','总部助理','二级总部正职','二级总部副职','二级总部助理','分公司正职','分公司副职','分公司助理','子公司正职','子公司副职','子公司助理','总部二级部门经理','分公司二级部门经理','营业部正职','营业部正职（卫星）','营业部副职','营业部助理','非行政职务']  
 list_sorted3 = ['公司总经理级','公司副总经理级','公司总经理助理级','公司总监级','总部总经理级','总部总经理级待遇','总部副总经理级','总部副总经理级待遇','总部总经理助理级','总部总经理助理级待遇','二级部门经理级','二级部门副经理级','二级部门经理助理级','营业部总经理级','营业部副总经理级','营业部总经理助理级']
@@ -321,12 +318,14 @@ def job2to1(x):
     print(name_x)
 '''
 #去重计数和普通计数(再次校验一下，拼表以后有没有人因为排序原因丢失)
-num_cadre = len(cadre_data['工号'].drop_duplicates())
-count_cadre = cadre_data['工号'].count()
-if num_cadre == count_cadre:
-    print('已检查：集团公司、证券公司干部总人数 %d 人（一人一条记录） \n' %(num_cadre))
+
+num_cadre_total = len(cadre_data['工号'].drop_duplicates())
+count_cadre_total = cadre_data['工号'].count()
+if num_cadre_total == count_cadre_total:
+    print('应有集团和证券各级干部',num_cadre,'+',num_group_cadre,'+ 贺添 =',num_cadre+num_group_cadre+1,'人')
+    print('实有',num_cadre_total,'人，人数符合')
 else:
-    print('去重人数: %d 人, 不去重人数：%d 人，表格中同一人有多条记录，请检查。\n' %(num_cadre,count_cadre))
+    print('去重人数: %d 人, 不去重人数：%d 人，表格中同一人有多条记录，请检查。\n' %(num_cadre_total,count_cadre_total))
 
 
 #输出

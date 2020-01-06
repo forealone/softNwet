@@ -8,7 +8,7 @@ input('即将开始制作月报-本年度干部变动统计，按回车键继续
 
 import pandas as pd
 print('\n 读取：E:\\组织部共享\\干部结构统计表\\本年度干部变动统计-模板.xlsx')
-input('确保当月干部变动已汇总进《本年度干部变动统计-模板.xlsx》，按回车键继续...')
+input('确保当月干部变动已汇总进“本年度干部变动统计-模板.xlsx”，按回车键继续...')
 data_io = pd.io.excel.ExcelFile(r'E:\组织部共享\干部结构统计表\本年度干部变动统计-模板.xlsx')
 data = pd.read_excel(data_io,sheet_name='干部变动统计')
 data_io.close()

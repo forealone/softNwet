@@ -12,7 +12,7 @@ import numpy as np
 #数据处理(注意每月修改日期)
 date = input('输入月度统计表的年月，(格式：YYYYMM):')
 print('E:\\1-统计\\%s\\raw\\ \n' %date)
-input('请检查文件目录是否正确，确保目录下有以下文件：\n 干部信息明细表（编辑）.xlsx \n 按回车键继续...')
+input('请检查文件目录是否正确，确保目录下有以下文件：\n “干部信息明细表（编辑）.xlsx” \n 按回车键继续...')
 
 p_data = pd.read_excel(r'E:\1-统计\%s\raw\干部信息明细表（编辑）.xlsx' %date)
 
