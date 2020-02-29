@@ -323,7 +323,7 @@ def job2to1(x):
 num_cadre_total = len(cadre_data['工号'].drop_duplicates())
 count_cadre_total = cadre_data['工号'].count()
 if num_cadre_total == count_cadre_total:
-    print('应有集团和证券各级干部',num_cadre,'+',num_group_cadre,'+ 贺添 + 王瑾怡 =',num_cadre+num_group_cadre+2,'人')
+    print('应有集团和证券各级干部',num_cadre,'+',num_group_cadre,'+ 贺添 =',num_cadre+num_group_cadre+1,'人')
     print('实有',num_cadre_total,'人，人数符合')
 else:
     print('去重人数: %d 人, 不去重人数：%d 人，表格中同一人有多条记录，请检查。\n' %(num_cadre_total,count_cadre_total))
