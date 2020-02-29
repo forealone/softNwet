@@ -43,7 +43,7 @@ row = ['引进','提聘','平调','降级','免职','辞职','兼职','免兼职
 pivot_table = pivot_table.reindex(row)  #行索引排序（干部类型）
 col = ['公司领导','集团干部','总部干部','分公司干部','子公司干部','营业部正职','营业部副职/卫星','二级部门经理','合计']
 pivot_table = pivot_table.reindex(columns=col)  #列索引排序
-
+pivot_table.fillna(0, inplace=True)
 
 #证券公司总部分子公司干部变动人数加总
 zb_sum = pivot_table.iloc[:,2] + pivot_table.iloc[:,3] + pivot_table.iloc[:,4]
