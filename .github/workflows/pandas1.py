@@ -334,5 +334,12 @@ print('E:\\1-统计\\%s\\raw\\' %date)
 input('\n 将输出文件至上述目录，按回车键继续...')
 
 cadre_data_output = pd.ExcelWriter(r'E:\1-统计\%s\raw\干部信息明细表（编辑）.xlsx' %date)
-cadre_data.to_excel(cadre_data_output, sheet_name='干部信息明细表', index=False)
+cadre_data.to_excel(cadre_data_output, sheet_name='干部信息明细表总表', index=False)
+cadre_data_p1.to_excel(cadre_data_output, sheet_name='集团和证券公司领导', index=False)
+cadre_data_p2.to_excel(cadre_data_output, sheet_name='集团和证券公司总部干部', index=False)
+cadre_data_p3.to_excel(cadre_data_output, sheet_name='分公司干部', index=False)
+cadre_data_p4.to_excel(cadre_data_output, sheet_name='非一体化管控子公司', index=False)
+cadre_data_p5.to_excel(cadre_data_output, sheet_name='营业部干部', index=False)
+cadre_data_p6.to_excel(cadre_data_output, sheet_name='非行政职务', index=False)
 cadre_data_output.save()
+
