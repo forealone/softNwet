@@ -57,10 +57,10 @@ job2_y = cadre_data.loc[cadre_data[cadre_data['职务'].str.contains('董事副�
 job_y = cadre_data.loc[cadre_data[cadre_data['职务'].str.contains('董事副总经理|业务董事|挂职甘肃|总部副总经理级待遇')].index,['职务']]
 name_y = cadre_data.loc[cadre_data[cadre_data['职务'].str.contains('董事副总经理|业务董事|挂职甘肃|总部副总经理级待遇')].index,['人员姓名']]
 print('以下人员职务信息即将更新（[职务]替换[管理人员信息：职务]： \n', cadre_data.loc[cadre_data[cadre_data['职务'].str.contains('董事副总经理|业务董事|挂职甘肃|总部副总经理级待遇')].index,['部门名称','人员姓名','职务','管理人员信息：职务']])
-print('\n 备注：金丹没重新聘、吴敏辉体现挂职、原二级部门经理体现专业通道职务、非行政职务体现专业通道职务 \n')  #按实际情况修改
+print('\n 备注：金丹没重新聘、原二级部门经理体现专业通道职务、非行政职务体现专业通道职务 \n')  #按实际情况修改
 input('请按回车键继续... \n')
 
-cadre_data.loc[cadre_data[cadre_data['职务'].str.contains('董事副总经理|业务董事|挂职甘肃|总部副总经理级待遇')].index,['管理人员信息：职务']] = job_y.iloc[:,0]
+cadre_data.loc[cadre_data[cadre_data['职务'].str.contains('董事副总经理|业务董事|总部副总经理级待遇')].index,['管理人员信息：职务']] = job_y.iloc[:,0]
 
 #其他干部职务以[管理人员信息：职务]为准
 cadre_data['职务比对'] = 'NaN'
@@ -201,7 +201,7 @@ cadre_data.loc[cadre_data[cadre_data['组织'] == '非一体化管控子公司']
 
 #部门类别（总部业务部门、总部职能部门、总部党群部门、分公司、子公司、营业部）——未独立履职分公司计入营业部，根据实际情况随时调整
 cadre_data['部门类别'] = '其他' #先全部设定为“其他”，按照以下的逻辑，新增/更名的部门，以及非行政职务的干部，其部门类别会设定为“其他”
-cadre_data.loc[cadre_data[cadre_data['一级部门'].str.contains('零售客户事业部|机构客户事业部|投资交易事业部|国际业务总部|资产管理事业部|固定收益交易总部|固定收益外汇商品事业部（FICC事业部）|固定收益销售交易总部|固定收益融资总部|场外市场总部|承销保荐|多元金融部|投资管理部|产业投资管理子公司')].index,['部门类别']] = '总部业务部门'
+cadre_data.loc[cadre_data[cadre_data['一级部门'].str.contains('零售客户事业部|机构客户事业部|投资交易事业部|国际业务总部|资产管理事业部|固定收益交易总部|固定收益外汇商品事业部（FICC事业部）|固定收益销售交易总部|固定收益融资总部|场外市场总部|金融创新总部（筹）|证券投资总部（筹）|承销保荐|多元金融部|投资管理部|产业投资管理子公司')].index,['部门类别']] = '总部业务部门'
 cadre_data.loc[cadre_data[cadre_data['一级部门'].str.contains('监事会办公室|办公室|党委组织部/人力资源总部|计划财务管理总部|董事会办公室|法律合规总部|风险管理总部|内核评审总部|风险资产处置办公室|信息技术保障总部|信息技术开发总部|信息技术架构组|稽核审计总部|运营中心|托管中心|战略规划总部|战略客户部|资金营运总部|其他|计划财务部|人力资源部|战略管理部|总经理办公室|稽核审计部|法务风控部')].index,['部门类别']] = '总部职能部门'
 cadre_data.loc[cadre_data[cadre_data['一级部门'].str.contains('扶贫办公室|纪检监察室|纪律检查室|党委办公室|党委巡视办公室|工会办公室|团委办公室')].index,['部门类别']] = '总部党群部门'
 cadre_data.loc[cadre_data[(cadre_data['一级部门'].str.contains('分公司')) | (cadre_data['一级部门'] == '西部证券')].index,['部门类别']] = '分公司'
