@@ -60,7 +60,7 @@ zq_total = pivot_table.iloc[8,2] + pivot_table.iloc[8,3] + pivot_table.iloc[8,4]
 jtzq_total = pivot_table.iloc[8,1] + zq_total
 
 #生成一段文字描述
-text = [('2019年以来至本月底，共调整干部%s人。' %jtzq_total),
+text = [('今年至本月底，共调整干部%s人。' %jtzq_total),
         ('%s调整干部%s人。（包括引进%s人、提聘%s人、平调%s人、降职%s人、免职%s人、离职%s人、兼职%s人、免兼职%s人）。' %(pivot_table.columns[1],pivot_table.iloc[8,1],pivot_table.iloc[0,1],pivot_table.iloc[1,1],pivot_table.iloc[2,1],pivot_table.iloc[3,1],pivot_table.iloc[4,1],pivot_table.iloc[5,1],pivot_table.iloc[6,1],pivot_table.iloc[7,1])),
         ('证券公司调整各级干部%s人，其中：' %zq_total),
         ('总部、分（子）公司以上干部调整%s人（包括引进%s人、提聘%s人、平调%s人、降职%s人、免职%s人、离职%s人、兼职%s人、免兼职%s人）；' %(zb_sum.iloc[8],zb_sum.iloc[0],zb_sum.iloc[1],zb_sum.iloc[2],zb_sum.iloc[3],zb_sum.iloc[4],zb_sum.iloc[5],zb_sum.iloc[6],zb_sum.iloc[7])),
