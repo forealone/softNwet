@@ -27,13 +27,14 @@ while i < 15:
     
     i += 1
 
-j = 15
-while j < 29:
-    cadre_data_this[cadre_data_this.columns[j]] = cadre_data_this[cadre_data_this.columns[j]].apply(lambda x: format(x, '.2%'))
-    cadre_data_this.loc[:, cadre_data_this.columns[j]] = cadre_data_this[cadre_data_this.columns[j]].replace('nan%', '0')
-    cadre_data_this.loc[:, cadre_data_this.columns[j]] = cadre_data_this[cadre_data_this.columns[j]].replace('inf%', '-（上期为0）')
-    cadre_data_this.loc[:, cadre_data_this.columns[j]] = cadre_data_this[cadre_data_this.columns[j]].replace('0.00%', '0')
-    j += 1
+while i < 29:
+    cadre_data_this[cadre_data_this.columns[i]] = cadre_data_this[cadre_data_this.columns[i]].apply(lambda x: format(x, '.2%'))
+    cadre_data_this.loc[:, cadre_data_this.columns[i]] = cadre_data_this[cadre_data_this.columns[i]].replace('nan%', '0')
+    cadre_data_this.loc[:, cadre_data_this.columns[i]] = cadre_data_this[cadre_data_this.columns[i]].replace('inf%', '-（上期为0）')
+    cadre_data_this.loc[:, cadre_data_this.columns[i]] = cadre_data_this[cadre_data_this.columns[i]].replace('0.00%', '0')
+    i += 1
+
+cadre_data_this.columns
 
 cadre_data_output = pd.ExcelWriter(r'C:\Users\User\Desktop\环比表.xls')
 cadre_data_this.to_excel(cadre_data_output, sheet_name='按干部类型', index=False)
