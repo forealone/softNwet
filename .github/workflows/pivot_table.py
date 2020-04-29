@@ -16,23 +16,14 @@ input('请检查文件目录是否正确，确保目录下有以下文件：\n �
 
 p_data = pd.read_excel(r'E:\1-统计\%s\raw\干部信息明细表（编辑）.xlsx' %date)
 
-p_data['政治面貌分类'] = '群众'
-p_data.loc[p_data[p_data['政治面貌'].str.contains('民盟|民革|民建|民进|农工党|致公党|九三学社|民主自治同盟')].index,['政治面貌分类']] = '民主党派'
-p_data.loc[p_data[p_data['政治面貌'].str.contains('中共')].index,['政治面貌分类']] = '中共党员'
-
-p_data['最高学历'].fillna('硕士研究生',inplace=True)
-p_data.loc[p_data[p_data['最高学历'].str.contains('专科|中专|高中|初中|小学|职高|技校|中技')].index,['最高学历']] = '大学专科及以下'
-p_data.loc[p_data[p_data['最高学历'].str.contains('本科')].index,['最高学历']] = '大学本科'
-p_data.loc[p_data[p_data['最高学历'].str.contains('硕士|研究生毕业班')].index,['最高学历']] = '硕士研究生'
-p_data.loc[p_data[p_data['最高学历'].str.contains('博士')].index,['最高学历']] = '博士研究生'
-
+#年龄字段格式修改，便于计算
 p_data['年龄']=p_data['年龄'].astype('float')
 p_data.dtypes
 
 #第一张表（按干部类型统计性别、政治面貌、学历、年龄）
 pt_xb = pd.pivot_table(p_data,index=['干部类型'],columns=['性别'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
 pt_zzmm = pd.pivot_table(p_data,index=['干部类型'],columns=['政治面貌分类'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
-pt_zgxl = pd.pivot_table(p_data,index=['干部类型'],columns=['最高学历'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
+pt_zgxl = pd.pivot_table(p_data,index=['干部类型'],columns=['最高学历分类'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
 pt_nljg = pd.pivot_table(p_data,index=['干部类型'],columns=['年龄段'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
 pt_pjnl = pd.pivot_table(p_data,index=['干部类型'],values=['年龄'],aggfunc={'年龄':np.mean}, fill_value=0, margins=True)
 pt_pjnl.rename(columns={'年龄':'平均年龄'},inplace=True)
@@ -62,7 +53,7 @@ pt_merge = pt_merge.reindex(columns=col)  #列索引排序
 #第二张表（按总部级干部类别）
 pt_xb2 = pd.pivot_table(p_data,index=['总部级干部类别'],columns=['性别'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
 pt_zzmm2 = pd.pivot_table(p_data,index=['总部级干部类别'],columns=['政治面貌分类'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
-pt_zgxl2 = pd.pivot_table(p_data,index=['总部级干部类别'],columns=['最高学历'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
+pt_zgxl2 = pd.pivot_table(p_data,index=['总部级干部类别'],columns=['最高学历分类'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
 pt_nljg2 = pd.pivot_table(p_data,index=['总部级干部类别'],columns=['年龄段'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
 pt_pjnl2 = pd.pivot_table(p_data,index=['总部级干部类别'],values=['年龄'],aggfunc={'年龄':np.mean}, fill_value=0, margins=True)
 pt_pjnl2.rename(columns={'年龄':'平均年龄'},inplace=True)
@@ -91,7 +82,7 @@ pt_merge2 = pt_merge2.reindex(columns=col)  #列索引排序
 #第三张表（按部门类别）
 pt_xb3 = pd.pivot_table(p_data,index=['部门类别'],columns=['性别'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
 pt_zzmm3 = pd.pivot_table(p_data,index=['部门类别'],columns=['政治面貌分类'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
-pt_zgxl3 = pd.pivot_table(p_data,index=['部门类别'],columns=['最高学历'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
+pt_zgxl3 = pd.pivot_table(p_data,index=['部门类别'],columns=['最高学历分类'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
 pt_nljg3 = pd.pivot_table(p_data,index=['部门类别'],columns=['年龄段'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
 pt_pjnl3 = pd.pivot_table(p_data,index=['部门类别'],values=['年龄'],aggfunc={'年龄':np.mean}, fill_value=0, margins=True)
 pt_pjnl3.rename(columns={'年龄':'平均年龄'},inplace=True)
@@ -120,7 +111,7 @@ pt_merge3 = pt_merge3.reindex(columns=col)  #列索引排序
 #第四张表（按公司领导类别1、公司领导类别2）
 pt_xb4 = pd.pivot_table(p_data,index=['公司领导类别1'],columns=['性别'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
 pt_zzmm4 = pd.pivot_table(p_data,index=['公司领导类别1'],columns=['政治面貌分类'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
-pt_zgxl4 = pd.pivot_table(p_data,index=['公司领导类别1'],columns=['最高学历'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
+pt_zgxl4 = pd.pivot_table(p_data,index=['公司领导类别1'],columns=['最高学历分类'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
 pt_nljg4 = pd.pivot_table(p_data,index=['公司领导类别1'],columns=['年龄段'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
 pt_pjnl4 = pd.pivot_table(p_data,index=['公司领导类别1'],values=['年龄'],aggfunc={'年龄':np.mean}, fill_value=0, margins=True)
 pt_pjnl4.rename(columns={'年龄':'平均年龄'},inplace=True)
@@ -147,7 +138,7 @@ pt_merge4 = pt_merge4.reindex(columns=col)  #列索引排序
 
 pt_xb5 = pd.pivot_table(p_data,index=['公司领导类别2'],columns=['性别'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
 pt_zzmm5 = pd.pivot_table(p_data,index=['公司领导类别2'],columns=['政治面貌分类'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
-pt_zgxl5 = pd.pivot_table(p_data,index=['公司领导类别2'],columns=['最高学历'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
+pt_zgxl5 = pd.pivot_table(p_data,index=['公司领导类别2'],columns=['最高学历分类'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
 pt_nljg5 = pd.pivot_table(p_data,index=['公司领导类别2'],columns=['年龄段'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
 pt_pjnl5 = pd.pivot_table(p_data,index=['公司领导类别2'],values=['年龄'],aggfunc={'年龄':np.mean}, fill_value=0, margins=True)
 pt_pjnl5.rename(columns={'年龄':'平均年龄'},inplace=True)
@@ -180,7 +171,7 @@ pt_merge5.fillna(0,inplace=True)
 #第五张表（按每个部门统计性别、政治面貌、学历、年龄）
 pt_xb6 = pd.pivot_table(p_data,index=['组织','一级部门'],columns=['性别'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
 pt_zzmm6 = pd.pivot_table(p_data,index=['组织','一级部门'],columns=['政治面貌分类'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
-pt_zgxl6 = pd.pivot_table(p_data,index=['组织','一级部门'],columns=['最高学历'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
+pt_zgxl6 = pd.pivot_table(p_data,index=['组织','一级部门'],columns=['最高学历分类'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
 pt_nljg6 = pd.pivot_table(p_data,index=['组织','一级部门'],columns=['年龄段'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
 pt_pjnl6 = pd.pivot_table(p_data,index=['组织','一级部门'],values=['年龄'],aggfunc={'年龄':np.mean}, fill_value=0, margins=True)
 pt_pjnl6.rename(columns={'年龄':'平均年龄'},inplace=True)

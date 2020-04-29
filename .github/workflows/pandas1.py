@@ -7,6 +7,7 @@ Created on Fri Aug  2 16:56:38 2019
 input('即将开始制作月报-集团和证券公司干部信息明细表，按回车键继续...')
 
 import pandas as pd  #pandas数据处理模块，pd是别名
+from datetime import datetime
 
 #导入(注意每月修改日期)
 date = input('输入月度统计表的年月，(格式：YYYYMM):')
@@ -148,6 +149,17 @@ del group_cadre_data['手机']
 
 cadre_data = pd.concat([group_cadre_data,cadre_data],axis=0,ignore_index=True,sort=False)
 
+#政治面貌和最高学历分类（pivot table用）
+cadre_data['政治面貌分类'] = '群众'
+cadre_data.loc[cadre_data[cadre_data['政治面貌'].str.contains('民盟|民革|民建|民进|农工党|致公党|九三学社|民主自治同盟')].index,['政治面貌分类']] = '民主党派'
+cadre_data.loc[cadre_data[cadre_data['政治面貌'].str.contains('中共')].index,['政治面貌分类']] = '中共党员'
+
+cadre_data['最高学历分类'] = '硕士研究生'
+cadre_data['最高学历'].fillna('硕士研究生',inplace=True)
+cadre_data.loc[cadre_data[cadre_data['最高学历'].str.contains('专科|中专|高中|初中|小学|职高|技校|中技')].index,['最高学历分类']] = '大学专科及以下'
+cadre_data.loc[cadre_data[cadre_data['最高学历'].str.contains('本科')].index,['最高学历分类']] = '大学本科'
+cadre_data.loc[cadre_data[cadre_data['最高学历'].str.contains('硕士|研究生毕业班')].index,['最高学历分类']] = '硕士研究生'
+cadre_data.loc[cadre_data[cadre_data['最高学历'].str.contains('博士')].index,['最高学历分类']] = '博士研究生'
 
 #年龄分段
 cadre_data['年龄段']='-'
@@ -155,6 +167,36 @@ cadre_data['年龄'] = cadre_data['年龄'].astype('int')
 cadre_data.loc[cadre_data[(cadre_data['年龄']<=35)].index,['年龄段']] = '35岁及以下'
 cadre_data.loc[cadre_data[(cadre_data['年龄']>35)&(cadre_data['年龄']<=45)].index,['年龄段']] = '36-45岁'
 cadre_data.loc[cadre_data[(cadre_data['年龄']>45)].index,['年龄段']] = '45岁以上'
+
+#取出生年份与当前年度比较，筛选出拟退岗/退休的
+cadre_data['出生年份'] = None
+cadre_data['退岗标识'] = None
+cadre_data['退休标识'] = None
+dt = datetime.now()
+cadre_data['基准年份'] = int(dt.strftime('%Y')) #转int型以便计算
+
+#出生日期取年份，个别字段出生日期为YYYY-MM的，先统一到YYYY-MM-DD
+i = 0
+while i < cadre_data.shape[0]:
+    if len(cadre_data.loc[i, '出生日期']) == 7:
+        cadre_data.loc[i, '出生日期'] = cadre_data.loc[i, '出生日期'] + '-01'
+    else:
+        pass
+    cadre_data.loc[i, '出生年份'] = datetime.strftime(datetime.strptime(cadre_data.loc[i, '出生日期'], '%Y-%m-%d'), '%Y')
+    i = i + 1
+
+cadre_data['出生年份']=cadre_data['出生年份'].astype('int')
+
+#拟退休人员打标记
+cadre_data.loc[cadre_data[(cadre_data['性别'] == '男') & (cadre_data['基准年份'] - cadre_data['出生年份'] >= 59) | 
+        (cadre_data['性别'] == '女') & (cadre_data['基准年份'] - cadre_data['出生年份'] >= 54)].index, '退休标识'] = '1年内退休'
+
+#拟退岗人员打标记（1年内退休的人不再体现退岗标识）
+cadre_data.loc[cadre_data[(cadre_data['性别'] == '男') & (cadre_data['基准年份'] - cadre_data['出生年份'] >= 57) & (cadre_data['基准年份'] - cadre_data['出生年份'] < 59) | 
+        (cadre_data['性别'] == '女') & (cadre_data['基准年份'] - cadre_data['出生年份'] >= 52) & (cadre_data['基准年份'] - cadre_data['出生年份'] < 54)].index, '退岗标识'] = '到退岗年龄'
+#预览一下有哪些拟退岗、退休的
+cadre_data.loc[cadre_data[cadre_data['退休标识'] == '1年内退休'].index, ['人员姓名','部门名称','职务']]
+cadre_data.loc[cadre_data[(cadre_data['退岗标识'] == '到退岗年龄')].index, ['人员姓名','部门名称','职务']]
 
 #拼考核结果(注意每年更新考核结果，修改日期)
 print('\n 即将匹配近两年考核结果，请确保以下目录正确、近两年考核结果汇总存在')
@@ -203,7 +245,7 @@ cadre_data.loc[cadre_data[cadre_data['组织'] == '非一体化管控子公司']
 cadre_data['部门类别'] = '其他' #先全部设定为“其他”，按照以下的逻辑，新增/更名的部门，以及非行政职务的干部，其部门类别会设定为“其他”
 cadre_data.loc[cadre_data[cadre_data['一级部门'].str.contains('零售客户事业部|机构客户事业部|投资交易事业部|国际业务总部|资产管理事业部|固定收益交易总部|固定收益外汇商品事业部（FICC事业部）|固定收益销售交易总部|固定收益融资总部|场外市场总部|金融创新总部|证券投资总部|承销保荐|多元金融部|投资管理部|产业投资管理子公司')].index,['部门类别']] = '总部业务部门'
 cadre_data.loc[cadre_data[cadre_data['一级部门'].str.contains('监事会办公室|办公室|计划财务管理总部|董事会办公室|法律合规总部|风险管理总部|内核评审总部|风险资产处置办公室|信息技术保障总部|信息技术开发总部|信息技术架构组|稽核审计总部|运营中心|托管中心|战略规划总部|战略客户总部|资金营运总部|其他|计划财务部|人力资源部|战略管理部|总经理办公室|稽核审计部|法务风控部')].index,['部门类别']] = '总部职能部门'
-cadre_data.loc[cadre_data[cadre_data['一级部门'].str.contains('扶贫办公室|纪检监察室|纪律检查室|党委办公室|党委巡视办公室|工会办公室|团委办公室|党委组织部/人力资源总部|党委巡察办公室|党建工作部/党委办公室')].index,['部门类别']] = '总部党群部门'
+cadre_data.loc[cadre_data[cadre_data['一级部门'].str.contains('扶贫办公室|纪检监察室|纪律检查室|党委办公室|党委巡视办公室|工会办公室|团委办公室|党委组织部/人力资源总部|党委巡察办公室|党建工作部')].index,['部门类别']] = '总部党群部门'
 cadre_data.loc[cadre_data[(cadre_data['一级部门'].str.contains('分公司')) | (cadre_data['一级部门'] == '西部证券')].index,['部门类别']] = '分公司'
 cadre_data.loc[cadre_data[cadre_data['组织'] == '非一体化管控子公司'].index,['部门类别']] = '子公司'
 cadre_data.loc[cadre_data[cadre_data['一级部门'].str.contains('营业部|河北分公司|内蒙古分公司|山西分公司|云南分公司|宁夏分公司')].index,['部门类别']] = '营业部'
@@ -214,8 +256,8 @@ cadre_data.loc[cadre_data[cadre_data['干部类型'] == '非行政职务'].index
 cadre_data['公司领导类别1'] = None
 cadre_data.loc[cadre_data[(cadre_data['人员姓名'].isin(['储晓明','杨玉成','徐宜阳','徐志斌','方荣义'])) & (cadre_data['一级部门']=='公司领导')].index,['公司领导类别1']] = '集团和证券公司党委班子'
 cadre_data['公司领导类别2'] = None
-cadre_data.loc[cadre_data[(cadre_data['人员姓名'].isin(['阳昌云','刘跃'])) & (cadre_data['一级部门']=='公司领导')].index,['公司领导类别2']] = '集团公司经营班子'
-cadre_data.loc[cadre_data[(cadre_data['人员姓名'].isin(['杨玉成','徐志斌','方荣义','朱敏杰','任全胜','薛军','陈晓升','谢晨','张克均','张剑'])) & (cadre_data['一级部门']=='公司领导')].index,['公司领导类别2']] = '证券公司经营班子'
+cadre_data.loc[cadre_data[(cadre_data['人员姓名'].isin(['徐志斌','阳昌云','刘跃'])) & (cadre_data['一级部门']=='公司领导')].index,['公司领导类别2']] = '集团公司经营班子'
+cadre_data.loc[cadre_data[(cadre_data['人员姓名'].isin(['杨玉成','方荣义','朱敏杰','任全胜','薛军','陈晓升','谢晨','张克均','张剑'])) & (cadre_data['一级部门']=='公司领导')].index,['公司领导类别2']] = '证券公司经营班子'
 
 #拆分重组与排序 ——根据实际情况随时调整
 list_sorted = ['储晓明','杨玉成','冯戎','杨文清','陈亮','徐宜阳','徐志斌','方荣义','阳昌云','朱敏杰','徐际国','任全胜','薛军','陈晓升','刘跃','谢晨','张克均','张剑','徐亮','何沙','车作斌','李雪峰']  #按实际情况修改

@@ -47,7 +47,7 @@ sty1 = NamedStyle(name='sty1', font=font1, fill=fill1,border=border1, alignment=
 sty2 = NamedStyle(name='sty2', font=font2, fill=fill2,border=border2, alignment=ali)
 
 def setup(ws):
-    ws.delete_cols(18, 8) #从18列开始删除，往后删8列（删除之前用pandas匹配的用于统计汇总的数据字段）
+    ws.delete_cols(18, 14) #从18列开始删除，往后删14列（删除之前用pandas匹配的用于统计汇总的数据字段）
 
     rows = ws.max_row
     cols = ws.max_column
