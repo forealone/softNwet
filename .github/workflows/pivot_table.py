@@ -12,9 +12,9 @@ import numpy as np
 #数据处理(注意每月修改日期)
 date = input('输入月度统计表的年月，(格式：YYYYMM):')
 print('E:\\1-统计\\%s\\raw\\ \n' %date)
-input('请检查文件目录是否正确，确保目录下有以下文件：\n “干部信息明细表（编辑）.xlsx” \n 按回车键继续...')
+input('请检查文件目录是否正确，确保目录下有以下文件：\n “干部信息明细表（数据清洗）.xlsx” \n 按回车键继续...')
 
-p_data = pd.read_excel(r'E:\1-统计\%s\raw\干部信息明细表（编辑）.xlsx' %date)
+p_data = pd.read_excel(r'E:\1-统计\%s\raw\干部信息明细表（数据清洗）.xlsx' %date)
 
 #年龄字段格式修改，便于计算
 p_data['年龄']=p_data['年龄'].astype('float')
@@ -230,10 +230,11 @@ pt_merge6.rename(columns={'All':'干部人数'}, index={'All':'合计'}, inplace
 col = ['干部人数','男','女','中共党员','民主党派','群众','博士研究生','硕士研究生','大学本科','大学专科及以下','35岁及以下','36-45岁','45岁以上','平均年龄','1年内退休','到退岗年龄']
 pt_merge6 = pt_merge6.reindex(columns=col)  #列索引排序
 
+
 #输出(注意每月修改日期)
 print('E:\\1-统计\\%s\\raw\\' %date)
 input('\n 将输出文件至上述目录，按回车键继续...')
-pt_output = pd.ExcelWriter(r'E:\1-统计\%s\raw\干部信息统计汇总表.xls' %date)
+pt_output = pd.ExcelWriter(r'E:\1-统计\%s\raw\集团和证券公司干部结构统计表raw.xls' %date)
 pt_merge.to_excel(pt_output, sheet_name='按干部类型')
 pt_merge2.to_excel(pt_output, sheet_name='按总部级干部类别')
 pt_merge3.to_excel(pt_output, sheet_name='按部门类别')

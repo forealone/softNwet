@@ -13,9 +13,9 @@ from openpyxl.styles import PatternFill, Border, Side, Alignment
 
 date = input('输入月度统计表的年月，(格式：YYYYMM):')
 print('E:\\1-统计\\%s\\raw\\ \n' %date)
-input('请检查文件目录是否正确，确保目录下有以下文件：\n “干部信息明细表（编辑）.xlsx” \n 按回车键继续...')
+input('请检查文件目录是否正确，确保目录下有以下文件：\n “干部信息明细表（数据清洗）.xlsx” \n 按回车键继续...')
 
-wb = load_workbook(r'E:\1-统计\%s\raw\干部信息明细表（编辑）.xlsx' %date)
+wb = load_workbook(r'E:\1-统计\%s\raw\干部信息明细表（数据清洗）.xlsx' %date)
 
 ws1 = wb['干部信息明细表总表']
 ws2 = wb['集团和证券公司领导']
@@ -88,4 +88,4 @@ setup(ws7)
 
 print('E:\\1-统计\\%s\\raw\\' %date)
 input('将输出文件至上述目录，按回车键继续...')
-wb.save(r'E:\1-统计\%s\raw\干部信息明细表（编辑2）.xlsx' %date)
+wb.save(r'E:\1-统计\%s\raw\集团和证券公司干部信息明细表%s.xlsx' %(date,date))
