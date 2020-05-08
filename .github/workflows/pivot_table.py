@@ -4,15 +4,15 @@ Created on Tue Sep  3 09:20:17 2019
 
 @author: User
 """
-input('即将开始制作月报-集团和证券公司干部结构统计表，按回车键继续...')
+input('即将开始制作月报-集团和证券公司干部结构统计表，按回车键继续... \n')
 
 import pandas as pd
 import numpy as np
 
 #数据处理(注意每月修改日期)
 date = input('输入月度统计表的年月，(格式：YYYYMM):')
-print('E:\\1-统计\\%s\\raw\\ \n' %date)
-input('请检查文件目录是否正确，确保目录下有以下文件：\n “干部信息明细表（数据清洗）.xlsx” \n 按回车键继续...')
+print('\n E:\\1-统计\\%s\\raw\\' %date)
+input('请检查文件目录是否正确，确保目录下有以下文件：\n “干部信息明细表（数据清洗）.xlsx” \n 按回车键继续... \n')
 
 p_data = pd.read_excel(r'E:\1-统计\%s\raw\干部信息明细表（数据清洗）.xlsx' %date)
 
@@ -233,7 +233,7 @@ pt_merge6 = pt_merge6.reindex(columns=col)  #列索引排序
 
 #输出(注意每月修改日期)
 print('E:\\1-统计\\%s\\raw\\' %date)
-input('\n 将输出文件至上述目录，按回车键继续...')
+input('将输出文件至上述目录，按回车键继续... \n')
 pt_output = pd.ExcelWriter(r'E:\1-统计\%s\raw\集团和证券公司干部结构统计表raw.xls' %date)
 pt_merge.to_excel(pt_output, sheet_name='按干部类型')
 pt_merge2.to_excel(pt_output, sheet_name='按总部级干部类别')

@@ -5,15 +5,15 @@ Created on Wed Nov 27 08:59:33 2019
 @author: User
 """
 
-input('即将对集团和证券公司干部信息明细表进行格式美化，按回车键继续...')
+input('即将对集团和证券公司干部信息明细表进行格式美化，按回车键继续... \n')
 
 from openpyxl import load_workbook
 from openpyxl.styles import Font, NamedStyle
 from openpyxl.styles import PatternFill, Border, Side, Alignment
 
 date = input('输入月度统计表的年月，(格式：YYYYMM):')
-print('E:\\1-统计\\%s\\raw\\ \n' %date)
-input('请检查文件目录是否正确，确保目录下有以下文件：\n “干部信息明细表（数据清洗）.xlsx” \n 按回车键继续...')
+print('\n E:\\1-统计\\%s\\raw\\' %date)
+input('请检查文件目录是否正确，确保目录下有以下文件：\n “干部信息明细表（数据清洗）.xlsx” \n 按回车键继续... \n')
 
 wb = load_workbook(r'E:\1-统计\%s\raw\干部信息明细表（数据清洗）.xlsx' %date)
 
@@ -87,5 +87,5 @@ setup(ws6)
 setup(ws7)
 
 print('E:\\1-统计\\%s\\raw\\' %date)
-input('将输出文件至上述目录，按回车键继续...')
+input('将输出文件至上述目录，按回车键继续... \n')
 wb.save(r'E:\1-统计\%s\raw\集团和证券公司干部信息明细表%s.xlsx' %(date,date))

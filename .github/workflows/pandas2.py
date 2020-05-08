@@ -4,11 +4,11 @@ Created on Wed Nov  6 16:38:14 2019
 
 @author: User
 """
-input('即将开始制作月报-年度干部变动统计，按回车键继续...')
+input('即将开始制作月报-年度干部变动统计，按回车键继续... \n')
 
 import pandas as pd
-print('\n 读取：E:\\组织部共享\\干部结构统计表\\年度干部变动统计-模板.xlsx')
-input('确保当月干部变动已汇总进“年度干部变动统计-模板.xlsx”，按回车键继续...')
+print('E:\\组织部共享\\干部结构统计表\\年度干部变动统计-模板.xlsx')
+input('确保当月干部变动已汇总进上述目录中的“年度干部变动统计-模板.xlsx”，按回车键继续... \n')
 data_io = pd.io.excel.ExcelFile(r'E:\组织部共享\干部结构统计表\年度干部变动统计-模板.xlsx')
 data = pd.read_excel(data_io,sheet_name='干部变动统计')
 data_io.close()
@@ -97,8 +97,8 @@ text = [('一、今年以来至本月底，共调整干部%d人。' %jtzq_total)
 text_output = pd.DataFrame(text)
 
 date = input('输入月度统计表的统计年月，用于命名导出文件，(格式：YYYYMM):')
-print('E:\\1-统计\\%s\\raw\\' %date)
-input('将输出文件至上述目录，按回车键继续...')
+print('\n E:\\1-统计\\%s\\raw\\' %date)
+input('将输出文件至上述目录，按回车键继续... \n')
 
 pt_output = pd.ExcelWriter(r'E:\1-统计\%s\raw\年度干部变动统计-截止%sraw.xlsx' %(date,date))
 data.to_excel(pt_output, sheet_name='干部变动明细', index=False)
@@ -106,7 +106,7 @@ pivot_table.to_excel(pt_output, sheet_name='透视图')
 text_output.to_excel(pt_output, sheet_name='文字描述', index=False)
 pt_output.save()
 
-pt_output2 = pd.ExcelWriter(r'C:\Users\User\Desktop\年度干部变动统计-免职降职名单.xlsx')
+pt_output2 = pd.ExcelWriter(r'E:\1-统计\%s\raw\年度干部变动统计-免职降职名单.xlsx' %date)
 mz_yj.to_excel(pt_output2, sheet_name='业绩原因免职', index=False)
 jj_yj.to_excel(pt_output2, sheet_name='业绩原因降职', index=False)
 mz_jw.to_excel(pt_output2, sheet_name='违纪原因免职', index=False)

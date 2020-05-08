@@ -5,15 +5,15 @@ Created on Wed Nov 27 13:47:55 2019
 @author: User
 """
 
-input('即将对本年度干部变动统计表进行格式美化，按回车键继续...')
+input('即将对本年度干部变动统计表进行格式美化，按回车键继续... \n')
 
 from openpyxl import load_workbook
 from openpyxl.styles import Font, NamedStyle
 from openpyxl.styles import PatternFill, Border, Side, Alignment
 
 date = input('输入月度统计表的年月，(格式：YYYYMM):')
-print('E:\\1-统计\\%s\\raw\\ \n' %date)
-input('请检查文件目录是否正确，确保目录下有以下文件：\n “年度干部变动统计-截止%sraw.xlsx” \n 按回车键继续...' %date)
+print('\n E:\\1-统计\\%s\\raw\\' %date)
+input('请检查文件目录是否正确，确保目录下有以下文件：\n “年度干部变动统计-截止%sraw.xlsx” \n 按回车键继续... \n' %date)
 
 wb = load_workbook(r'E:\1-统计\%s\raw\年度干部变动统计-截止%sraw.xlsx' %(date,date))
 
@@ -86,7 +86,7 @@ ws3.delete_rows(1, 1)
             
             
 
-print('E:\\1-统计\\%s\\raw\\ \n' %date)
-input('将输出文件至上述目录，按回车键继续...')
+print('E:\\1-统计\\%s\\raw\\' %date)
+input('将输出文件至上述目录，按回车键继续... \n')
 
 wb.save(r'E:\1-统计\%s\raw\年度干部变动统计-截止%s.xlsx' %(date,date))

@@ -11,8 +11,8 @@ from datetime import datetime
 
 #导入(注意每月修改日期)
 date = input('输入月度统计表的年月，(格式：YYYYMM):')
-print('E:\\1-统计\\%s\\raw\\ \n' %date)
-input('请检查文件目录是否正确，确保目录下有以下两个文件：\n 证券公司“干部信息明细表（含分子公司）” \n 集团公司“干部信息明细表（集团模板201911）.xlsx”\n 按回车键继续...')
+print('\n E:\\1-统计\\%s\\raw\\ ' %date)
+input('请检查文件目录是否正确，确保目录下有以下两个文件：\n 证券公司“干部信息明细表（含分子公司）” \n 集团公司“干部信息明细表（集团模板201911）.xlsx”\n 按回车键继续... \n')
 
 cadre_data_io = pd.io.excel.ExcelFile(r'E:\1-统计\%s\raw\干部信息明细表（含分子公司）.xls' %date)
 cadre_data = pd.read_excel(cadre_data_io,sheet_name='Sheet0')
@@ -366,14 +366,14 @@ num_cadre_total = len(cadre_data['工号'].drop_duplicates())
 count_cadre_total = cadre_data['工号'].count()
 if num_cadre_total == count_cadre_total:
     print('应有集团和证券各级干部',num_cadre,'+',num_group_cadre,'+ 贺添 =',num_cadre+num_group_cadre+1,'人')
-    print('实有',num_cadre_total,'人，人数符合')
+    print('实有',num_cadre_total,'人，人数符合 \n')
 else:
     print('去重人数: %d 人, 不去重人数：%d 人，表格中同一人有多条记录，请检查。\n' %(num_cadre_total,count_cadre_total))
 
 
 #输出
 print('E:\\1-统计\\%s\\raw\\' %date)
-input('\n 将输出文件至上述目录，按回车键继续...')
+input('\n 将输出文件至上述目录，按回车键继续... \n')
 
 cadre_data_output = pd.ExcelWriter(r'E:\1-统计\%s\raw\干部信息明细表（数据清洗）.xlsx' %date)
 cadre_data.to_excel(cadre_data_output, sheet_name='干部信息明细表总表', index=False)
