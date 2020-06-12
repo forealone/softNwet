@@ -91,7 +91,7 @@ pt_merge2 = pd.merge(pt_merge2,pt_tg2,how='left',left_index=True,right_index=Tru
 
 pt_merge2.fillna(0,inplace=True)
 pt_merge2.rename(columns={'All':'人数'}, index={'All':'合计'}, inplace=True)
-row = ['集团公司总部领导班子','证券公司事业部总部领导班子','分公司本部领导班子','子公司领导班子','合计']
+row = ['集团公司总部领导班子','集团公司总部二级部门经理','证券公司事业部总部领导班子','证券公司事业部总部二级部门经理','分公司本部领导班子','分公司二级部门经理','子公司领导班子','合计']
 pt_merge2 = pt_merge2.reindex(row)  #行索引排序（干部类型）
 col = ['人数','男','女','中共党员','民主党派','群众','博士研究生','硕士研究生','大学本科','大学专科及以下','35岁及以下','36-45岁','45岁以上','平均年龄','1年内退休','到退岗年龄']
 pt_merge2 = pt_merge2.reindex(columns=col)  #列索引排序
@@ -236,7 +236,7 @@ print('E:\\1-统计\\%s\\raw\\' %date)
 input('将输出文件至上述目录，按回车键继续... \n')
 pt_output = pd.ExcelWriter(r'E:\1-统计\%s\raw\集团和证券公司干部结构统计表raw.xls' %date)
 pt_merge.to_excel(pt_output, sheet_name='按干部类型')
-pt_merge2.to_excel(pt_output, sheet_name='按总部级干部类别')
+pt_merge2.to_excel(pt_output, sheet_name='按总部级和部门经理级')
 pt_merge3.to_excel(pt_output, sheet_name='按部门类别')
 pt_merge5.to_excel(pt_output, sheet_name='按公司领导类别')
 pt_merge6.to_excel(pt_output, sheet_name='按一级部门')

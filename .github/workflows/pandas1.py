@@ -105,6 +105,14 @@ print('邓伟体现服务公司总经理助理 \n')
 input('按回车确认修改... \n')
 cadre_data.loc[cadre_data[cadre_data['人员姓名']=='邓伟'].index,['组织','一级部门','部门名称']] = ['非一体化管控子公司','上海申银万国综合服务有限公司','上海申银万国综合服务有限公司']
 
+print('吴敏辉体现江西分公司副总经理 \n')
+input('按回车确认修改... \n')
+cadre_data.loc[cadre_data[cadre_data['人员姓名']=='吴敏辉'].index,['组织','一级部门','部门名称']] = ['申万宏源证券有限公司江西分公司','江西分公司','江西分公司']
+
+print('刘丹（临时） \n')
+input('按回车确认修改... \n')
+cadre_data.loc[cadre_data[cadre_data['人员姓名']=='刘丹'].index,['组织','一级部门','部门名称']] = ['非一体化管控子公司','申银万国投资有限公司','申银万国投资有限公司']
+
 #贺添（年龄每年得手动修改一下）
 print('香港公司干部贺添是经过公司党委面试和任命的干部，但是信息在人力系统中没有，为其手动添加一条记录 \n')
 input('按回车确认修改... \n')
@@ -195,33 +203,35 @@ cadre_data.loc[cadre_data[(cadre_data['退岗标识'] == '到退岗年龄')].ind
 
 #拼考核结果(注意每年更新考核结果，修改日期)
 print('\n 即将匹配近两年考核结果，请确保以下目录正确、近两年考核结果汇总存在')
-print('E:\\2-年度考核\\历年考核结果\\2017考核结果汇总.xlsx \n E:\\2-年度考核\\历年考核结果\\2018考核结果汇总.xlsx')
+print('E:\\2-年度考核\\历年考核结果\\2018考核结果汇总.xlsx \n E:\\2-年度考核\\历年考核结果\\2019考核结果汇总.xlsx')
 input('请按回车键继续... \n')
-eva_2017 = pd.read_excel(r'E:\2-年度考核\历年考核结果\2017考核结果汇总.xlsx',sheet_name='干部员工')
 eva_2018 = pd.read_excel(r'E:\2-年度考核\历年考核结果\2018考核结果汇总.xlsx',sheet_name='干部员工')
-del eva_2017['职务']
+eva_2019 = pd.read_excel(r'E:\2-年度考核\历年考核结果\2019考核结果汇总.xlsx',sheet_name='干部员工')
 del eva_2018['职务']
-del eva_2017['序号']
+del eva_2019['职务']
 del eva_2018['序号']
-del eva_2017['考核对象']
+del eva_2019['序号']
 del eva_2018['考核对象']
-del eva_2017['部门']
+del eva_2019['考核对象']
 del eva_2018['部门']
-del eva_2017['考核方案']
+del eva_2019['部门']
 del eva_2018['考核方案']
-eva_2017.rename(columns={'考核对象编码':'工号'},inplace=True)
+del eva_2019['考核方案']
+del eva_2019['导入/同步']
+del eva_2019['备注']
 eva_2018.rename(columns={'考核对象编码':'工号'},inplace=True)
-eva_2017.rename(columns={'考核结果':'2017年度考核结果'},inplace=True)
+eva_2019.rename(columns={'考核对象编码':'工号'},inplace=True)
 eva_2018.rename(columns={'考核结果':'2018年度考核结果'},inplace=True)
+eva_2019.rename(columns={'考核结果':'2019年度考核结果'},inplace=True)
 
-cadre_data = pd.merge(cadre_data,eva_2017,on='工号',how='left')
 cadre_data = pd.merge(cadre_data,eva_2018,on='工号',how='left')
-cadre_data['2017年度考核结果'].fillna('-',inplace=True)
+cadre_data = pd.merge(cadre_data,eva_2019,on='工号',how='left')
 cadre_data['2018年度考核结果'].fillna('-',inplace=True)
+cadre_data['2019年度考核结果'].fillna('-',inplace=True)
 
 cadre_data['考核结果是否符合提聘条件'] = None
-cadre_data.loc[cadre_data[(cadre_data['2017年度考核结果'].str.contains('A|B')) & (cadre_data['2018年度考核结果'].str.contains('A|B|C'))].index,['考核结果是否符合提聘条件']] = '符合'
-cadre_data.loc[cadre_data[(cadre_data['2017年度考核结果'].str.contains('A|B|C')) & (cadre_data['2018年度考核结果'].str.contains('A|B'))].index,['考核结果是否符合提聘条件']] = '符合'
+cadre_data.loc[cadre_data[(cadre_data['2018年度考核结果'].str.contains('A|B')) & (cadre_data['2019年度考核结果'].str.contains('A|B|C'))].index,['考核结果是否符合提聘条件']] = '符合'
+cadre_data.loc[cadre_data[(cadre_data['2018年度考核结果'].str.contains('A|B|C')) & (cadre_data['2019年度考核结果'].str.contains('A|B'))].index,['考核结果是否符合提聘条件']] = '符合'
 cadre_data['考核结果是否符合提聘条件'].fillna('不符合',inplace=True)
 
 #有人一年有多个结果，导致出现重复记录，需处理一下（只保留第一条记录）
@@ -231,9 +241,12 @@ cadre_data.reset_index(drop=True, inplace=True)
 #总部级干部类别（集团公司总部，证券公司事业部总部，分公司本部，子公司、营业部）——未独立履职分公司计入营业部，根据实际情况随时调整
 cadre_data['总部级干部类别'] = None
 cadre_data.loc[cadre_data[(cadre_data['组织'] == '申万宏源集团股份有限公司') & (cadre_data['干部类型'].str.contains('总部正职|总部副职|总部助理'))].index,['总部级干部类别']] = '集团公司总部领导班子'
+cadre_data.loc[cadre_data[(cadre_data['组织'] == '申万宏源集团股份有限公司') & (cadre_data['干部类型'].str.contains('总部二级部门经理'))].index,['总部级干部类别']] = '集团公司总部二级部门经理'
 cadre_data.loc[cadre_data[((cadre_data['组织'] == '申万宏源证券有限公司') | (cadre_data['组织'] == '申万宏源证券承销保荐有限责任公司')) & (cadre_data['干部类型'].str.contains('总部正职|总部副职|总部助理'))].index,['总部级干部类别']] = '证券公司事业部总部领导班子'
+cadre_data.loc[cadre_data[((cadre_data['组织'] == '申万宏源证券有限公司') | (cadre_data['组织'] == '申万宏源证券承销保荐有限责任公司')) & (cadre_data['干部类型'].str.contains('总部二级部门经理'))].index,['总部级干部类别']] = '证券公司事业部总部二级部门经理'
 cadre_data.loc[cadre_data[((cadre_data['组织'].str.contains('分公司')) | (cadre_data['组织'] == '申万宏源西部证券有限公司')) & (cadre_data['干部类型'].str.contains('分公司正职|分公司副职|分公司助理')) & (~cadre_data['一级部门'].str.contains('营业部|河北分公司|内蒙古分公司|山西分公司|云南分公司|宁夏分公司'))].index,['总部级干部类别']] = '分公司本部领导班子'
-cadre_data.loc[cadre_data[cadre_data['组织'] == '非一体化管控子公司'].index,['总部级干部类别']] = '子公司领导班子'
+cadre_data.loc[cadre_data[((cadre_data['组织'].str.contains('分公司')) | (cadre_data['组织'] == '申万宏源西部证券有限公司')) & (cadre_data['干部类型'].str.contains('分公司二级部门经理')) & (~cadre_data['一级部门'].str.contains('营业部|河北分公司|内蒙古分公司|山西分公司|云南分公司|宁夏分公司'))].index,['总部级干部类别']] = '分公司二级部门经理'
+cadre_data.loc[cadre_data[(cadre_data['组织'] == '非一体化管控子公司') & (cadre_data['干部类型'].str.contains('子公司正职|子公司副职|子公司助理'))].index,['总部级干部类别']] = '子公司领导班子'
 
 
 #部门类别（总部业务部门、总部职能部门、总部党群部门、分公司、子公司、营业部）——未独立履职分公司计入营业部，根据实际情况随时调整
@@ -249,13 +262,13 @@ cadre_data.loc[cadre_data[cadre_data['干部类型'] == '非行政职务'].index
 
 #公司领导类别（党委班子）（证券经营班子、集团经营班子）——根据实际情况随时调整
 cadre_data['公司领导类别1'] = None
-cadre_data.loc[cadre_data[(cadre_data['人员姓名'].isin(['储晓明','杨玉成','徐宜阳','徐志斌','方荣义'])) & (cadre_data['一级部门']=='公司领导')].index,['公司领导类别1']] = '集团和证券公司党委班子'
+cadre_data.loc[cadre_data[(cadre_data['人员姓名'].isin(['储晓明','杨玉成','徐宜阳','徐志斌','方荣义','张克均'])) & (cadre_data['一级部门']=='公司领导')].index,['公司领导类别1']] = '集团和证券公司党委班子'
 cadre_data['公司领导类别2'] = None
-cadre_data.loc[cadre_data[(cadre_data['人员姓名'].isin(['徐志斌','阳昌云','刘跃'])) & (cadre_data['一级部门']=='公司领导')].index,['公司领导类别2']] = '集团公司经营班子'
-cadre_data.loc[cadre_data[(cadre_data['人员姓名'].isin(['杨玉成','方荣义','朱敏杰','任全胜','薛军','陈晓升','谢晨','张克均','张剑'])) & (cadre_data['一级部门']=='公司领导')].index,['公司领导类别2']] = '证券公司经营班子'
+cadre_data.loc[cadre_data[(cadre_data['人员姓名'].isin(['徐志斌','阳昌云','任全胜','刘跃'])) & (cadre_data['一级部门']=='公司领导')].index,['公司领导类别2']] = '集团公司经营班子'
+cadre_data.loc[cadre_data[(cadre_data['人员姓名'].isin(['杨玉成','方荣义','朱敏杰','薛军','陈晓升','谢晨','张克均','张剑'])) & (cadre_data['一级部门']=='公司领导')].index,['公司领导类别2']] = '证券公司经营班子'
 
 #拆分重组与排序 ——根据实际情况随时调整
-list_sorted = ['储晓明','杨玉成','冯戎','杨文清','陈亮','徐宜阳','徐志斌','方荣义','阳昌云','朱敏杰','徐际国','任全胜','薛军','陈晓升','刘跃','谢晨','张克均','张剑','徐亮','何沙','车作斌','李雪峰']  #按实际情况修改
+list_sorted = ['储晓明','杨玉成','陈亮','徐宜阳','徐志斌','杨文清','冯戎','方荣义','阳昌云','朱敏杰','徐际国','任全胜','薛军','陈晓升','刘跃','谢晨','张克均','张剑','徐亮','何沙','车作斌','李雪峰']  #按实际情况修改
 list_sorted2 = ['公司正职','公司副职','公司助理','公司总监','总部正职','总部副职','总部助理','二级总部正职','二级总部副职','二级总部助理','分公司正职','分公司副职','分公司助理','子公司正职','子公司副职','子公司助理','总部二级部门经理','分公司二级部门经理','营业部正职','营业部正职（卫星）','营业部副职','营业部助理','非行政职务']  
 list_sorted3 = ['公司总经理级','公司副总经理级','公司总经理助理级','公司总监级','总部总经理级','总部总经理级待遇','总部副总经理级','总部副总经理级待遇','总部总经理助理级','总部总经理助理级待遇','二级部门经理级','二级部门副经理级','二级部门经理助理级','营业部总经理级','营业部副总经理级','营业部总经理助理级']
 list_sorted4 = ['上海分公司','江苏分公司','杭州分公司','北京分公司','四川分公司','深圳分公司','湖北分公司','广东分公司','温州分公司','辽宁分公司','江西分公司','重庆分公司','厦门分公司','大连分公司','宁波分公司','广西分公司','湖南分公司','天津分公司','山东分公司','吉林分公司','安徽分公司','海南分公司','福建分公司','河南分公司','黑龙江分公司','贵州分公司','青岛分公司','陕西分公司','甘肃分公司','山西分公司','宁夏分公司','云南分公司','河北分公司','内蒙古分公司','上海自贸区分公司','沈阳分公司','成都分公司','兰州分公司','西部证券','上海第二分公司']

@@ -10,18 +10,18 @@ import pandas as pd  #pandas数据处理模块，pd是别名
 #import sys
 
 #导入原始数据：考核结果
-eva_2017 = pd.read_excel(r'E:\2-年度考核\历年考核结果\2017考核结果汇总.xlsx',sheet_name='干部员工')
 eva_2018 = pd.read_excel(r'E:\2-年度考核\历年考核结果\2018考核结果汇总.xlsx',sheet_name='干部员工')
+eva_2019 = pd.read_excel(r'E:\2-年度考核\历年考核结果\2019考核结果汇总.xlsx',sheet_name='干部员工')
 
 #编辑原始数据
-del eva_2017['职务']
 del eva_2018['职务']
-del eva_2017['序号']
+del eva_2019['职务']
 del eva_2018['序号']
-eva_2017['考核年度'] = None
-eva_2017.loc[eva_2017[eva_2017['考核方案'].str.contains('2017')].index,['考核年度']] = '2017'
+del eva_2019['序号']
 eva_2018['考核年度'] = None
 eva_2018.loc[eva_2018[eva_2018['考核方案'].str.contains('2018')].index,['考核年度']] = '2018'
+eva_2019['考核年度'] = None
+eva_2019.loc[eva_2019[eva_2019['考核方案'].str.contains('2019')].index,['考核年度']] = '2019'
 
 #输入
 name = input('输入需查询的人员姓名，多个人用空格分隔：')
@@ -32,10 +32,10 @@ print(name_split ,'\n 共',len(name_split),'人')
 somebody_eva_template = pd.DataFrame({'考核对象编码':['000000'],'考核对象':['张三'],'部门':['人力资源总部'],'考核结果':['A（优秀）'],'考核方案':['201X年干部考核方案'],'考核年度':['201X']})
 
 #不用while循环的考核结果查询方式
-somebody_2017 = eva_2017[eva_2017['考核对象'].isin(name_split)]  
 somebody_2018 = eva_2018[eva_2018['考核对象'].isin(name_split)]  
-somebody_eva = somebody_eva_template.append(somebody_2017,ignore_index=True)
-somebody_eva = somebody_eva.append(somebody_2018,ignore_index=True)
+somebody_2019 = eva_2019[eva_2019['考核对象'].isin(name_split)]  
+somebody_eva = somebody_eva_template.append(somebody_2018,ignore_index=True)
+somebody_eva = somebody_eva.append(somebody_2019,ignore_index=True)
 somebody_eva.drop([0,0],inplace=True)
 somebody_eva = somebody_eva.sort_values(by=['考核对象编码','考核年度'] , ascending=(True,True))
 somebody_eva = somebody_eva.reset_index(drop=True)

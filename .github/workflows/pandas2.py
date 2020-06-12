@@ -64,8 +64,8 @@ jt_total = pivot_table.iloc[8,1] + pivot_table.iloc[8,2]
 jtzq_total = jt_total + zq_total
 
 #关于免职降级的详细统计（人员名单）
-mz_yj = data[(data['调整类别'] == '免职') & (data['备注'].str.contains('另行|另有|赴香港工作|学习|转岗|退休|按规定转岗|违纪|纪委|平级|原职级不变') != True)]
-jj_yj = data[(data['调整类别'] == '降级') & (data['备注'].str.contains('另行|另有|赴香港工作|学习|转岗|退休|按规定转岗|违纪|纪委|平级|原职级不变') != True)]
+mz_yj = data[(data['调整类别'] == '免职') & (data['备注'].str.contains('另行|另有|赴香港工作|学习|转岗|退休|按规定转岗|违纪|纪委|平级|原职级不变|待定') != True)]
+jj_yj = data[(data['调整类别'] == '降级') & (data['备注'].str.contains('另行|另有|赴香港工作|学习|转岗|退休|按规定转岗|违纪|纪委|平级|原职级不变|待定') != True)]
 mz_jw = data[(data['调整类别'] == '免职') & (data['备注'].str.contains('违纪|纪委'))]
 jj_jw = data[(data['调整类别'] == '降级') & (data['备注'].str.contains('违纪|纪委'))]
 
