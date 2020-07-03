@@ -20,7 +20,7 @@ p_data = pd.read_excel(r'E:\1-统计\%s\raw\干部信息明细表（数据清洗
 p_data['年龄']=p_data['年龄'].astype('float')
 p_data.dtypes
 
-#第一张表（按干部类型统计性别、政治面貌、学历、年龄）
+#第一、二张表（按干部类型统计性别、政治面貌、学历、年龄）
 pt_xb = pd.pivot_table(p_data,index=['干部类型'],columns=['性别'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
 pt_zzmm = pd.pivot_table(p_data,index=['干部类型'],columns=['政治面貌分类'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
 pt_zgxl = pd.pivot_table(p_data,index=['干部类型'],columns=['最高学历分类'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
@@ -58,8 +58,10 @@ pt_merge = pt_merge.reindex(row)  #行索引排序（干部类型）
 col = ['人数','男','女','中共党员','民主党派','群众','博士研究生','硕士研究生','大学本科','大学专科及以下','35岁及以下','36-45岁','45岁以上','平均年龄','1年内退休','到退岗年龄']
 pt_merge = pt_merge.reindex(columns=col)  #列索引排序
 
+row_alter = ['总部正职', '总部副职', '总部助理', '二级总部正职', '二级总部副职', '二级总部助理', '分公司正职', '分公司副职', '分公司助理', '子公司正职', '子公司副职', '子公司助理', '总部二级部门经理', '分公司二级部门经理', '营业部正职', '营业部正职（卫星）', '营业部副职', '营业部助理', '合计']
+pt_merge7 = pt_merge.reindex(row_alter)  #行索引排序（干部类型不含公司领导和非行政职务）
 
-#第二张表（按总部级干部类别）
+#第三张表（按总部级干部类别）
 pt_xb2 = pd.pivot_table(p_data,index=['总部级干部类别'],columns=['性别'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
 pt_zzmm2 = pd.pivot_table(p_data,index=['总部级干部类别'],columns=['政治面貌分类'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
 pt_zgxl2 = pd.pivot_table(p_data,index=['总部级干部类别'],columns=['最高学历分类'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
@@ -96,7 +98,7 @@ pt_merge2 = pt_merge2.reindex(row)  #行索引排序（干部类型）
 col = ['人数','男','女','中共党员','民主党派','群众','博士研究生','硕士研究生','大学本科','大学专科及以下','35岁及以下','36-45岁','45岁以上','平均年龄','1年内退休','到退岗年龄']
 pt_merge2 = pt_merge2.reindex(columns=col)  #列索引排序
 
-#第三张表（按部门类别）
+#第四张表（按部门类别）
 pt_xb3 = pd.pivot_table(p_data,index=['部门类别'],columns=['性别'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
 pt_zzmm3 = pd.pivot_table(p_data,index=['部门类别'],columns=['政治面貌分类'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
 pt_zgxl3 = pd.pivot_table(p_data,index=['部门类别'],columns=['最高学历分类'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
@@ -133,7 +135,7 @@ pt_merge3 = pt_merge3.reindex(row)  #行索引排序（干部类型）
 col = ['人数','男','女','中共党员','民主党派','群众','博士研究生','硕士研究生','大学本科','大学专科及以下','35岁及以下','36-45岁','45岁以上','平均年龄','1年内退休','到退岗年龄']
 pt_merge3 = pt_merge3.reindex(columns=col)  #列索引排序
 
-#第四张表（按公司领导类别1、公司领导类别2）
+#第五张表（按公司领导类别1、公司领导类别2）
 pt_xb4 = pd.pivot_table(p_data,index=['公司领导类别1'],columns=['性别'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
 pt_zzmm4 = pd.pivot_table(p_data,index=['公司领导类别1'],columns=['政治面貌分类'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
 pt_zgxl4 = pd.pivot_table(p_data,index=['公司领导类别1'],columns=['最高学历分类'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
@@ -193,7 +195,7 @@ pt_merge5 = pt_merge5.reindex(columns=col)  #列索引排序
 pt_merge5 = pd.concat([pt_merge4,pt_merge5], axis=0, ignore_index=False, sort=False)
 pt_merge5.fillna(0,inplace=True)
 
-#第五张表（按每个部门统计性别、政治面貌、学历、年龄）
+#第六张表（按每个部门统计性别、政治面貌、学历、年龄）
 pt_xb6 = pd.pivot_table(p_data,index=['组织','一级部门'],columns=['性别'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
 pt_zzmm6 = pd.pivot_table(p_data,index=['组织','一级部门'],columns=['政治面貌分类'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
 pt_zgxl6 = pd.pivot_table(p_data,index=['组织','一级部门'],columns=['最高学历分类'],values=['工号'],aggfunc={'工号':'count'}, fill_value=0, margins=True)
@@ -236,6 +238,7 @@ print('E:\\1-统计\\%s\\raw\\' %date)
 input('将输出文件至上述目录，按回车键继续... \n')
 pt_output = pd.ExcelWriter(r'E:\1-统计\%s\raw\集团和证券公司干部结构统计表raw.xls' %date)
 pt_merge.to_excel(pt_output, sheet_name='按干部类型')
+pt_merge7.to_excel(pt_output, sheet_name='按干部类型（统计口径）')
 pt_merge2.to_excel(pt_output, sheet_name='按总部级和部门经理级')
 pt_merge3.to_excel(pt_output, sheet_name='按部门类别')
 pt_merge5.to_excel(pt_output, sheet_name='按公司领导类别')

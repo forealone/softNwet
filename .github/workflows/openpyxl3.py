@@ -57,7 +57,24 @@ for r in range(1, rows1+1):
             
 #ws1.column_dimensions['A'].width = 20.0  #调整列宽
 #ws1.row_dimensions[1].height = 40  #调整行高
-            
+
+#冻结首行
+ws1.freeze_panes = 'A2'
+#设置列宽
+ws1.column_dimensions["A"].width = 8
+ws1.column_dimensions["B"].width = 7
+ws1.column_dimensions["C"].width = 18
+ws1.column_dimensions["D"].width = 18
+ws1.column_dimensions["E"].width = 11
+ws1.column_dimensions["F"].width = 18
+ws1.column_dimensions["G"].width = 18
+ws1.column_dimensions["H"].width = 11
+ws1.column_dimensions["I"].width = 9
+ws1.column_dimensions["J"].width = 9
+ws1.column_dimensions["K"].width = 20
+ws1.column_dimensions["L"].width = 10
+ws1.column_dimensions["M"].width = 11
+    
 #第二张表
 rows2 = ws2.max_row
 cols2 = ws2.max_column 
