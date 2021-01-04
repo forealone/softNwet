@@ -9,6 +9,9 @@ input('即将开始制作月报-年度干部变动统计，按回车键继续...
 import pandas as pd
 
 date = input('输入月度统计表的统计年月，用于命名导出文件，(格式：YYYYMM):')
+while len(date) != 6:
+    date = input('输入的年月有误，请按格式重新输入6位年月，(格式：YYYYMM):')
+     
 date_y = date[0:4]
 print('E:\\组织部共享\\干部调整工作台账%s.xlsx' %date_y)
 input('确保上述目录文件存在，且已汇总最新干部变动情况，按回车键继续... \n')
@@ -24,6 +27,7 @@ del data['是否已安排离任审计']
 del data['是否向监管局报备']
 del data['系统是否已调整']
 
+data['工号'] = data['工号'].apply(str)
 data['发文文号'].fillna('暂未发文的予以剔除，不计入月报', inplace=True)
 data = data.drop(data[data['发文文号'] == '暂未发文的予以剔除，不计入月报'].index)
 
@@ -87,8 +91,8 @@ jt_total = pivot_table.iloc[8,1] + pivot_table.iloc[8,2]
 jtzq_total = jt_total + zq_total
 
 #关于免职降级的详细统计（人员名单）
-mz_yj = data[(data['调整类别'] == '免职') & (data['备注'].str.contains('另行|另有|赴香港工作|学习|转岗|退休|按规定转岗|营业部撤|违纪|纪委|平级|原职级不变|待定') != True)]
-jj_yj = data[(data['调整类别'] == '降级') & (data['备注'].str.contains('另行|另有|赴香港工作|学习|转岗|退休|按规定转岗|营业部撤|违纪|纪委|平级|原职级不变|待定') != True)]
+mz_yj = data[(data['调整类别'] == '免职') & (data['备注'].str.contains('另行|另有|赴香港工作|学习|转岗|退休|按规定转岗|违纪|纪委|平级|原职级不变|待定') != True)]
+jj_yj = data[(data['调整类别'] == '降级') & (data['备注'].str.contains('另行|另有|赴香港工作|学习|转岗|退休|按规定转岗|违纪|纪委|平级|原职级不变|待定') != True)]
 mz_jw = data[(data['调整类别'] == '免职') & (data['备注'].str.contains('违纪|纪委'))]
 jj_jw = data[(data['调整类别'] == '降级') & (data['备注'].str.contains('违纪|纪委'))]
 
@@ -121,7 +125,7 @@ text = [('一、今年以来至本月底，共调整干部%d人。' %jtzq_total)
         ('%s调整%d人。（包括引进%d人、提聘%d人、平调%d人、降职%d人、免职%d人、离职%d人、兼职%d人、免兼职%d人）。' %(pivot_table.columns[8],pivot_table.iloc[8,8],pivot_table.iloc[0,8],pivot_table.iloc[1,8],pivot_table.iloc[2,8],pivot_table.iloc[3,8],pivot_table.iloc[4,8],pivot_table.iloc[5,8],pivot_table.iloc[6,8],pivot_table.iloc[7,8])),
         (''),
         ('二、本年度%s干部%d人，其中总部级干部%d人。%s的干部中，35岁及以下的干部%d人，占比%.2f%%。' %(pivot_table.index[0],pivot_table.iloc[0,9],jtzqzb_sum['引进'],pivot_table.index[0],yj_35.shape[0],(100*yj_35.shape[0]/yj_all.shape[0]))),
-        ('本年度%s干部%d人，其中总部级干部%d人。%s的干部中，35岁及以下的干部%d人，占比%.2f%%。' %(pivot_table.index[1],pivot_table.iloc[1,9],jtzqzb_sum['提聘'],pivot_table.index[0],tp_35.shape[0],(100*tp_35.shape[0]/tp_all.shape[0]))),
+        ('本年度%s干部%d人，其中总部级干部%d人。%s的干部中，35岁及以下的干部%d人，占比%.2f%%。' %(pivot_table.index[1],pivot_table.iloc[1,9],jtzqzb_sum['提聘'],pivot_table.index[1],tp_35.shape[0],(100*tp_35.shape[0]/tp_all.shape[0]))),
         (''),
         ('三、经营管理业绩不佳、担当作为不力的%d名总部级干部、%d名营业部干部、%d名二级部门经理进行了免职；%d名总部级干部、%d名营业部干部、%d名二级部门经理进行了降级。（还需另行统计因业绩承诺未完成，仅降职等不变动职务的）' %(mz_yj_zb.shape[0],mz_yj_yyb.shape[0],mz_yj_bmjl.shape[0],jj_yj_zb.shape[0],jj_yj_yyb.shape[0],jj_yj_bmjl.shape[0])),
         ('因违纪原因对%d名总部级干部、%d名营业部干部、%d名二级部门经理进行了免职；%d名总部级干部、%d名营业部干部、%d名二级部门经理进行了降级。' %(mz_jw_zb.shape[0],mz_jw_yyb.shape[0],mz_jw_bmjl.shape[0],jj_jw_zb.shape[0],jj_jw_yyb.shape[0],jj_jw_bmjl.shape[0]))]

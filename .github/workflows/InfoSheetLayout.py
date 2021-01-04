@@ -12,6 +12,9 @@ from openpyxl.styles import Font, NamedStyle
 from openpyxl.styles import PatternFill, Border, Side, Alignment
 
 date = input('输入月度统计表的年月，(格式：YYYYMM):')
+while len(date) != 6:
+    date = input('输入的年月有误，请按格式重新输入6位年月，(格式：YYYYMM):')
+
 print('\n E:\\1-统计\\%s\\raw\\' %date)
 input('请检查文件目录是否正确，确保目录下有以下文件：\n “干部信息明细表（数据清洗）.xlsx” \n 按回车键继续... \n')
 
