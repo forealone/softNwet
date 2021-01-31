@@ -10,11 +10,11 @@ input('即将对本年度干部变动统计表进行格式美化，按回车键�
 from openpyxl import load_workbook
 from openpyxl.styles import Font, NamedStyle
 from openpyxl.styles import PatternFill, Border, Side, Alignment
-
+import re
 date = input('输入月度统计表的年月，(格式：YYYYMM):')
-while len(date) != 6:
+while re.match(r'\d{4}(1[0-2]{1}$|0[0-9]{1}$)', date) == None:
     date = input('输入的年月有误，请按格式重新输入6位年月，(格式：YYYYMM):')
- 
+
 print('\n E:\\1-统计\\%s\\raw\\' %date)
 input('请检查文件目录是否正确，确保目录下有以下文件：\n “年度干部变动统计-截止%sraw.xlsx” \n 按回车键继续... \n' %date)
 
@@ -23,6 +23,11 @@ wb = load_workbook(r'E:\1-统计\%s\raw\年度干部变动统计-截止%sraw.xls
 ws1 = wb['干部变动明细']
 ws2 = wb['透视图']
 ws3 = wb['文字描述']
+del wb['透视图2']
+del wb['中间表-引进']
+del wb['中间表-引进35岁']
+del wb['中间表-提聘']
+del wb['中间表-提聘35岁']
 
 #字体
 font1 = Font(name='宋体', color='000000', size=10, b=True)
@@ -57,16 +62,16 @@ for r in range(1, rows1+1):
             ws1.cell(r, c).style = sty1
         else:
             ws1.cell(r, c).style = sty2
-            
+
 #ws1.column_dimensions['A'].width = 20.0  #调整列宽
 #ws1.row_dimensions[1].height = 40  #调整行高
 
 #冻结首行
 ws1.freeze_panes = 'A2'
 #设置列宽
-ws1.column_dimensions["A"].width = 8
+ws1.column_dimensions['A'].width = 8
 ws1.column_dimensions["B"].width = 7
-ws1.column_dimensions["C"].width = 18
+ws1.column_dimensions['C'].width = 18
 ws1.column_dimensions["D"].width = 18
 ws1.column_dimensions["E"].width = 11
 ws1.column_dimensions["F"].width = 18
@@ -77,7 +82,9 @@ ws1.column_dimensions["J"].width = 9
 ws1.column_dimensions["K"].width = 22
 ws1.column_dimensions["L"].width = 10
 ws1.column_dimensions["M"].width = 11
-    
+ws1.column_dimensions["N"].hidden = 1
+ws1.column_dimensions["O"].hidden = 1
+
 #第二张表
 rows2 = ws2.max_row
 cols2 = ws2.max_column 

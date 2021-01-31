@@ -10,11 +10,11 @@ import pandas as pd  #pandas数据处理模块，pd是别名
 import re
 #import sys
 
-#导入原始数据：考核结果
+#导入原始数据：考核结果（每年更新最新一年的考核结果）
 eva_2018 = pd.read_excel(r'E:\2-年度考核\历年考核结果\2018考核结果汇总.xlsx',sheet_name='干部员工')
 eva_2019 = pd.read_excel(r'E:\2-年度考核\历年考核结果\2019考核结果汇总.xlsx',sheet_name='干部员工')
 
-#编辑原始数据
+#编辑原始数据（每年更新）
 del eva_2018['职务']
 del eva_2019['职务']
 del eva_2018['序号']
@@ -65,7 +65,8 @@ else:
 '''
 
 #格式调整
-somebody_eva2 = somebody_eva.groupby(['考核对象编码','考核对象','考核年度','部门','考核结果'])['考核对象编码'].count()
+somebody_eva2 = somebody_eva.groupby(['考核对象编码','考核对象','考核年度','部门','考核结果'])['考核对象编码'].unique()
+
 print(somebody_eva2)
 
 #查重名

@@ -10,9 +10,9 @@ input('即将对集团和证券公司干部信息明细表进行格式美化，�
 from openpyxl import load_workbook
 from openpyxl.styles import Font, NamedStyle
 from openpyxl.styles import PatternFill, Border, Side, Alignment
-
+import re
 date = input('输入月度统计表的年月，(格式：YYYYMM):')
-while len(date) != 6:
+while re.match(r'\d{4}(1[0-2]{1}$|0[0-9]{1}$)', date) == None:
     date = input('输入的年月有误，请按格式重新输入6位年月，(格式：YYYYMM):')
 
 print('\n E:\\1-统计\\%s\\raw\\' %date)

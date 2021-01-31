@@ -8,10 +8,11 @@ input('即将开始制作月报-集团和证券公司干部结构统计表，按
 
 import pandas as pd
 import numpy as np
+import re
 
 #数据处理(注意每月修改日期)
 date = input('输入月度统计表的年月，(格式：YYYYMM):')
-while len(date) != 6:
+while re.match(r'\d{4}(1[0-2]{1}$|0[0-9]{1}$)', date) == None:
     date = input('输入的年月有误，请按格式重新输入6位年月，(格式：YYYYMM):')
     
 print('\n E:\\1-统计\\%s\\raw\\' %date)

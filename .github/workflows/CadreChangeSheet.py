@@ -7,16 +7,17 @@ Created on Wed Nov  6 16:38:14 2019
 input('即将开始制作月报-年度干部变动统计，按回车键继续... \n')
 
 import pandas as pd
+import re
 
 date = input('输入月度统计表的统计年月，用于命名导出文件，(格式：YYYYMM):')
-while len(date) != 6:
+while re.match(r'\d{4}(1[0-2]{1}$|0[0-9]{1}$)', date) == None:
     date = input('输入的年月有误，请按格式重新输入6位年月，(格式：YYYYMM):')
      
 date_y = date[0:4]
 print('E:\\组织部共享\\干部调整工作台账%s.xlsx' %date_y)
 input('确保上述目录文件存在，且已汇总最新干部变动情况，按回车键继续... \n')
 data_io = pd.io.excel.ExcelFile(r'E:\组织部共享\干部调整工作台账%s.xlsx' %date_y)
-data = pd.read_excel(data_io,sheet_name='干部调整情况')
+data = pd.read_excel(data_io,sheet_name='干部调整情况', dtype={'工号':str})
 data_io.close()
 
 del data['管理权限']
@@ -27,9 +28,17 @@ del data['是否已安排离任审计']
 del data['是否向监管局报备']
 del data['系统是否已调整']
 
-data['工号'] = data['工号'].apply(str)
 data['发文文号'].fillna('暂未发文的予以剔除，不计入月报', inplace=True)
 data = data.drop(data[data['发文文号'] == '暂未发文的予以剔除，不计入月报'].index)
+
+#另一种常用统计口径
+data['调整类别2'] = data['调整类别']
+data.loc[data[data['调整类别'].isin(['平调','兼职','免兼职'])].index,['调整类别2']] = ['岗位调整']
+data.loc[data[data['调整类别'].isin(['辞职','免职','降职','降级'])].index,['调整类别2']] = ['免职降职']
+data['干部类别2'] = data['干部类别']
+data.loc[data[data['干部类别'].str.contains('总部|分公司|子公司')].index,['干部类别2']] = ['总部、分（子）公司']
+data.loc[data[data['干部类别'].str.contains('营业部')].index,['干部类别2']] = ['营业部干部']
+data.loc[data[data['干部类别'].str.contains('二级部门')].index,['干部类别2']] = ['二级部门经理']
 
 #匹配出生年月等信息，以便统计提聘引进干部年龄段
 print('\n 即将匹配干部基本信息，请确保以下目录正确、干部信息明细表存在')
@@ -64,6 +73,7 @@ def all_cadre_alter_count():
 def summary_count():
     pass
 '''
+#透视图1
 pivot_table = pd.pivot_table(data,index=['调整类别'],columns=['干部类别'], values=['姓名'], aggfunc={'姓名':'count'}, dropna=True, fill_value=0, margins=True, margins_name='合计') #去除columns中为空数据、用0填充空数字、展示汇总数all
 pivot_table.columns = pivot_table.columns.droplevel(level=0) 
 row = ['引进','提聘','平调','降级','免职','辞职','兼职','免兼职','合计']
@@ -71,6 +81,15 @@ pivot_table = pivot_table.reindex(row)  #行索引排序（干部类型）
 col = ['公司领导','集团干部（总部）','集团干部（二级部门）','总部干部','分公司干部','子公司干部','营业部正职','营业部副职/卫星','二级部门经理','合计']
 pivot_table = pivot_table.reindex(columns=col)  #列索引排序
 pivot_table.fillna(0, inplace=True)
+
+#透视图2
+pivot_table2 = pd.pivot_table(data,index=['调整类别2'],columns=['干部类别2'], values=['姓名'], aggfunc={'姓名':'count'}, dropna=True, fill_value=0, margins=True, margins_name='合计') #去除columns中为空数据、用0填充空数字、展示汇总数all
+pivot_table2.columns = pivot_table2.columns.droplevel(level=0) 
+row = ['引进','提聘','岗位调整','免职降职','合计']
+pivot_table2 = pivot_table2.reindex(row)  #行索引排序（干部类型）
+col = ['公司领导','总部（分）子公司','二级部门经理','营业部干部','合计']
+pivot_table2 = pivot_table2.reindex(columns=col)  #列索引排序
+pivot_table2.fillna(0, inplace=True)
 
 
 #证券公司总部分子公司干部变动人数加总
@@ -116,7 +135,7 @@ tp_all = data_merge[data_merge['调整类别'] == '提聘']
 tp_35 = data_merge[(data_merge['调整类别'] == '提聘')&(data_merge['年龄段'] == '35岁及以下')]
 
 #生成一段文字描述
-text = [('一、今年以来至本月底，共调整干部%d人。' %jtzq_total),
+text = [('一、今年以来至本月底，共调整干部%d人。（不计公司领导调整）' %jtzq_total),
         ('集团公司调整干部%d人。（其中集团公司总部干部引进%d人、提聘%d人、平调%d人、降职%d人、免职%d人、离职%d人、兼职%d人、免兼职%d人；' %(jt_total,pivot_table.iloc[0,1],pivot_table.iloc[1,1],pivot_table.iloc[2,1],pivot_table.iloc[3,1],pivot_table.iloc[4,1],pivot_table.iloc[5,1],pivot_table.iloc[6,1],pivot_table.iloc[7,1])),
         ('集团公司二级部门经理引进%d人、提聘%d人、平调%d人、降职%d人、免职%d人、离职%d人、兼职%d人、免兼职%d人。）' %(pivot_table.iloc[0,2],pivot_table.iloc[1,2],pivot_table.iloc[2,2],pivot_table.iloc[3,2],pivot_table.iloc[4,2],pivot_table.iloc[5,2],pivot_table.iloc[6,2],pivot_table.iloc[7,2])),
         ('证券公司调整各级干部%d人，其中：' %zq_total),
@@ -135,7 +154,12 @@ text_output = pd.DataFrame(text)
 pt_output = pd.ExcelWriter(r'E:\1-统计\%s\raw\年度干部变动统计-截止%sraw.xlsx' %(date,date))
 data.to_excel(pt_output, sheet_name='干部变动明细', index=False)
 pivot_table.to_excel(pt_output, sheet_name='透视图')
+pivot_table2.to_excel(pt_output, sheet_name='透视图2')
 text_output.to_excel(pt_output, sheet_name='文字描述', index=False)
+yj_all.to_excel(pt_output, sheet_name='中间表-引进', index=False)
+yj_35.to_excel(pt_output, sheet_name='中间表-引进35岁', index=False)
+tp_all.to_excel(pt_output, sheet_name='中间表-提聘', index=False)
+tp_35.to_excel(pt_output, sheet_name='中间表-提聘35岁', index=False)
 pt_output.save()
 
 pt_output2 = pd.ExcelWriter(r'E:\1-统计\%s\raw\年度干部变动统计-免职降职名单.xlsx' %date)
