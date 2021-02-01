@@ -6,6 +6,7 @@ Created on Sun Nov  3 19:48:21 2019
 
 import random
 import tkinter as tk
+from PIL import Image, ImageTk
 
 #定义洗牌函数
 def shuffle():
@@ -335,10 +336,51 @@ label13.pack()
 label14 = tk.Label(window, textvariable=var14, font=('宋体', 9), bg='green', fg='white', width=40, height=2)
 label14.pack()
 
-
+'''
 canvas = tk.Canvas(window, bg='green', height='200', width='150')
-image_file = tk.PhotoImage(file='F:\My_python\KoC.jpg')
-image = canvas.create_image(75, 0, anchor='n',image=image_file)
+image_file = tk.PhotoImage(file=r'E:\22-个人\QoH.png')
+image = canvas.create_image(75, 0, anchor='sw',image=image_file)
 canvas.pack()
+'''
+#展示扑克牌图片
+def resize(w, h, w_box, h_box, pil_image):
+    '''
+    resize a pil_image object so it will fit into a box of size w_box times h_box, but retain aspect ratio
+    对一个pil_image对象进行缩放，让它在一个矩形框内，还能保持比例
+    '''
+    f1 = 1.0*w_box/w # 1.0 forces float division in Python2
+    f2 = 1.0*h_box/h
+    factor = min([f1, f2])
+    #print(f1, f2, factor) # test
+    # use best down-sizing filter
+    width = int(w*factor)
+    height = int(h*factor)
+    return pil_image.resize((width, height), Image.ANTIALIAS)
+
+# size of image display box you want
+#期望图像显示的大小
+w_box = 200
+h_box = 270
+
+# open as a PIL image object 以一个PIL图像对象打开
+pil_image = Image.open(r'E:\22-个人\QoH.png')
+
+# get the size of the image 获取图像的原始大小
+w, h = pil_image.size
+
+# resize the image so it retains its aspect ration but fits into the specified display box
+#缩放图像让它保持比例，同时限制在一个矩形框范围内
+pil_image_resized = resize(w, h, w_box, h_box, pil_image)
+
+# convert PIL image object to Tkinter PhotoImage object
+# 把PIL图像对象转变为Tkinter的PhotoImage对象
+tk_image = ImageTk.PhotoImage(pil_image_resized)
+
+# put the image on a widget the size of the specified display box
+# Label: 这个小工具，就是个显示框，小窗口，把图像大小显示到指定的显示框
+label = tk.Label(window, image=tk_image, width=w_box, height=h_box)
+#padx,pady是图像与窗口边缘的距离
+label.pack(padx=5, pady=5)
+
 
 window.mainloop()

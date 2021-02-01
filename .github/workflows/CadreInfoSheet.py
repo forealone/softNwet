@@ -9,14 +9,22 @@ input('即将开始制作月报-集团和证券公司干部信息明细表，按
 import pandas as pd  #pandas数据处理模块，pd是别名
 from datetime import datetime
 import re
-
+import os
 #导入(注意每月修改日期)
 date = input('输入月度统计表的年月，(格式：YYYYMM):')
 while re.match(r'\d{4}(1[0-2]{1}$|0[0-9]{1}$)', date) == None:
     date = input('输入的年月有误，请按格式重新输入6位年月，(格式：YYYYMM):')
 
-print('\n E:\\1-统计\\%s\\raw\\ ' %date)
-input('请检查文件目录是否正确，确保目录下有以下两个文件：\n 证券公司“干部信息明细表（含分子公司）” \n 集团公司“干部信息明细表（集团模板201911）.xlsx”\n 按回车键继续... \n')
+input('请检查文件目录是否正确、确保目录下有以下文件：\n “E:\\1-统计\\%s\\raw\\干部信息明细表（含分子公司）.xls \n E:\\1-统计\\%s\\raw\\干部信息明细表（集团模板201911）.xlsx” \n 按回车键继续... \n' %(date,date))
+if os.access(r'E:\1-统计\%s\raw\干部信息明细表（含分子公司）.xls' %date, os.F_OK):
+    pass
+else:
+    input('【E:\\1-统计\\%s\\raw\\干部信息明细表（含分子公司）】不存在，是否继续？（按回车键继续...） \n' %date)
+
+if os.access(r'E:\1-统计\%s\raw\干部信息明细表（集团模板201911）.xlsx' %date, os.F_OK):
+    pass
+else:
+    input('【E:\\1-统计\\%s\\raw\\干部信息明细表（集团模板201911）】不存在，是否继续？（按回车键继续...） \n' %date)
 
 cadre_data_io = pd.io.excel.ExcelFile(r'E:\1-统计\%s\raw\干部信息明细表（含分子公司）.xls' %date)
 cadre_data = pd.read_excel(cadre_data_io,sheet_name='Sheet0')
@@ -210,10 +218,17 @@ cadre_data.loc[cadre_data[(cadre_data['性别'] == '男') & (cadre_data['基准�
 cadre_data.loc[cadre_data[cadre_data['退休标识'] == '1年内退休'].index, ['人员姓名','部门名称','职务']]
 cadre_data.loc[cadre_data[(cadre_data['退岗标识'] == '到退岗年龄')].index, ['人员姓名','部门名称','职务']]
 
-#拼考核结果(注意每年更新考核结果，修改日期)
-print('\n 即将匹配近两年考核结果，请确保以下目录正确、近两年考核结果汇总存在')
-print('E:\\2-年度考核\\历年考核结果\\2018考核结果汇总.xlsx \n E:\\2-年度考核\\历年考核结果\\2019考核结果汇总.xlsx')
-input('请按回车键继续... \n')
+#拼考核结果(注意每年更新考核结果，修改日期——将来更新自动抓取近两年文件)
+input('确保目录下有以下文件：\n “E:\\2-年度考核\\历年考核结果\\2018考核结果汇总.xlsx  \n E:\\2-年度考核\\历年考核结果\\2019考核结果汇总.xlsx”。按回车键继续... \n')
+if os.access(r'E:\2-年度考核\历年考核结果\2018考核结果汇总.xlsx', os.F_OK):
+    input('即将匹配2018年度考核结果，按回车键继续... \n')
+else:
+    input('【E:\\2-年度考核\\历年考核结果\\2018考核结果汇总.xlsx】不存在，是否继续？（按回车键继续...） \n')
+if os.access(r'E:\2-年度考核\历年考核结果\2019考核结果汇总.xlsx', os.F_OK):
+    input('即将匹配2019年度考核结果，按回车键继续... \n')
+else:
+    input('【E:\\2-年度考核\\历年考核结果\\2019考核结果汇总.xlsx】不存在，是否继续？（按回车键继续...） \n')
+    
 eva_2018 = pd.read_excel(r'E:\2-年度考核\历年考核结果\2018考核结果汇总.xlsx',sheet_name='干部员工')
 eva_2019 = pd.read_excel(r'E:\2-年度考核\历年考核结果\2019考核结果汇总.xlsx',sheet_name='干部员工')
 del eva_2018['职务']

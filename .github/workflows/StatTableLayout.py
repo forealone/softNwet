@@ -11,12 +11,16 @@ from openpyxl import load_workbook
 from openpyxl.styles import Font, NamedStyle
 from openpyxl.styles import PatternFill, Border, Side, Alignment
 import re
+import os
 date = input('输入月度统计表的年月，(格式：YYYYMM):')
 while re.match(r'\d{4}(1[0-2]{1}$|0[0-9]{1}$)', date) == None:
     date = input('输入的年月有误，请按格式重新输入6位年月，(格式：YYYYMM):')
 
-print('\n E:\\1-统计\\%s\\raw\\' %date)
-input('请检查文件目录是否正确，确保目录下有以下文件：\n “年度干部变动统计-截止%sraw.xlsx” \n 按回车键继续... \n' %date)
+input('请检查文件目录是否正确、确保目录下有以下文件：\n “E:\\1-统计\\%s\\raw\\年度干部变动统计-截止%sraw.xlsx” \n 按回车键继续... \n' %(date,date))
+if os.access(r'E:\1-统计\%s\raw\年度干部变动统计-截止%sraw.xlsx' %(date,date), os.F_OK):
+    pass
+else:
+    input('【E:\\1-统计\\%s\\raw\\年度干部变动统计-截止%sraw.xlsx】不存在，是否继续？（按回车键继续...） \n' %(date,date))
 
 wb = load_workbook(r'E:\1-统计\%s\raw\年度干部变动统计-截止%sraw.xlsx' %(date,date))
 
