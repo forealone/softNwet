@@ -12,10 +12,11 @@ from PIL import Image, ImageTk
 def shuffle():
     global deck
     global maxcards
+    global suit
     deck = ['A','A','A','A',2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6,7,7,7,7,8,8,8,8,9,9,9,9,
             10,10,10,10,'J','J','J','J','Q','Q','Q','Q','K','K','K','K']
     n=0
-    while n<=2:
+    while n<=2:  #扩展到8副牌
         deck.extend(deck)
         n = n+1
     maxcards = len(deck)
@@ -26,6 +27,7 @@ def drawcard():
     global maxcards
     x = random.randint(0,maxcards-1)
     card = deck[x]
+    
     maxcards = maxcards - 1
     deck.pop(x)
     return card
@@ -44,6 +46,10 @@ def draw4card():
     text1 = ('庄家%s&%s VS 闲家%s&%s' %(banker_card1,banker_card2,player_card1,player_card2))
     text2 = ('（当前8副牌还剩余%s张）' %maxcards)
     return text1, text2
+
+    
+
+
 
 #定义卡牌数字转换
 def convert(card):
@@ -234,7 +240,7 @@ def another_game():
 #洗牌，游戏开始
 window = tk.Tk()
 window.title('Baccarat!')
-window.geometry('1024x768')
+window.geometry('1600x800')
 
 var1 = tk.StringVar()
 deck_count = 0
@@ -359,28 +365,82 @@ def resize(w, h, w_box, h_box, pil_image):
 
 # size of image display box you want
 #期望图像显示的大小
-w_box = 200
-h_box = 270
-
+w_box = 83
+h_box = 126
+'''
 # open as a PIL image object 以一个PIL图像对象打开
-pil_image = Image.open(r'E:\22-个人\QoH.png')
+#pil_image_p1 = Image.open(r'E:\22-个人\%soS.png' %str(banker_card1))
+#pil_image_p2 = Image.open(r'E:\22-个人\%soS.png' %str(banker_card2))
+#pil_image_p3 = Image.open(r'E:\22-个人\%soS.png' %str(player_card1))
+#pil_image_p4 = Image.open(r'E:\22-个人\%soS.png' %str(player_card2))
+pil_image_p1 = Image.open(r'E:\22-个人\back.png')
+pil_image_p2 = Image.open(r'E:\22-个人\back.png')
+pil_image_p3 = Image.open(r'E:\22-个人\back.png')
+pil_image_p4 = Image.open(r'E:\22-个人\back.png')
 
 # get the size of the image 获取图像的原始大小
-w, h = pil_image.size
+w, h = pil_image_p1.size
 
 # resize the image so it retains its aspect ration but fits into the specified display box
 #缩放图像让它保持比例，同时限制在一个矩形框范围内
-pil_image_resized = resize(w, h, w_box, h_box, pil_image)
+pil_image_p1_resized = resize(w, h, w_box, h_box, pil_image_p1)
+pil_image_p2_resized = resize(w, h, w_box, h_box, pil_image_p2)
+pil_image_p3_resized = resize(w, h, w_box, h_box, pil_image_p3)
+pil_image_p4_resized = resize(w, h, w_box, h_box, pil_image_p4)
 
 # convert PIL image object to Tkinter PhotoImage object
 # 把PIL图像对象转变为Tkinter的PhotoImage对象
-tk_image = ImageTk.PhotoImage(pil_image_resized)
-
+tk_image_p1 = ImageTk.PhotoImage(pil_image_p1_resized)
+tk_image_p2 = ImageTk.PhotoImage(pil_image_p2_resized)
+tk_image_p3 = ImageTk.PhotoImage(pil_image_p3_resized)
+tk_image_p4 = ImageTk.PhotoImage(pil_image_p4_resized)
+'''
+'''
 # put the image on a widget the size of the specified display box
 # Label: 这个小工具，就是个显示框，小窗口，把图像大小显示到指定的显示框
-label = tk.Label(window, image=tk_image, width=w_box, height=h_box)
+label_p1 = tk.Label(window, image=tk_image_p1, anchor='e', width=w_box, height=h_box)
+label_p2 = tk.Label(window, image=tk_image_p2, anchor='w', width=w_box, height=h_box)
 #padx,pady是图像与窗口边缘的距离
-label.pack(padx=5, pady=5)
+label_p1.place(x=1400, y=600)
+label_p2.place(x=2000, y=600)
+label_p2.pack(padx=5, pady=5)
+'''
+'''
+canvas = tk.Canvas(window, bg='green', height='130', width='750')
+canvas.pack()
+image_p1 = canvas.create_image(45, 67, image=tk_image_p1)
+image_p2 = canvas.create_image(130, 67, image=tk_image_p2)
+image_p3 = canvas.create_image(625, 67, image=tk_image_p3)
+image_p4 = canvas.create_image(710, 67, image=tk_image_p4)
+'''
 
+
+pil_image = None
+pil_image_resized = None
+tk_image = None
+
+def card_display(): #
+    global pil_image
+    global tk_image
+    global w
+    global h
+    global banker_card1 #
+    pil_image = Image.open(r'E:\22-个人\back.png') #
+
+    w, h = pil_image.size
+    pil_image_resized = resize(w, h, w_box, h_box, pil_image)
+    
+    tk_image = ImageTk.PhotoImage(pil_image_resized)
+    return tk_image
+canvas = tk.Canvas(window, bg='green', height='130', width='750')
+canvas.pack()
+#banker_card1_display = card_display(banker_card1)
+#banker_card2_display = card_display(banker_card2)
+#player_card1_display = card_display(player_card1)
+#player_card2_display = card_display(player_card2)
+image_p1 = canvas.create_image(45, 67, image=card_display()) #
+#image_p2 = canvas.create_image(130, 67, image=banker_card2_display)
+#image_p3 = canvas.create_image(625, 67, image=player_card1_display)
+#image_p4 = canvas.create_image(710, 67, image=player_card2_display)
 
 window.mainloop()
