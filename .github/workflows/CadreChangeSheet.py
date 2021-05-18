@@ -46,6 +46,8 @@ data['干部类别2'] = data['干部类别']
 data.loc[data[data['干部类别'].str.contains('总部|分公司|子公司')].index,['干部类别2']] = ['总部、分（子）公司']
 data.loc[data[data['干部类别'].str.contains('营业部')].index,['干部类别2']] = ['营业部干部']
 data.loc[data[data['干部类别'].str.contains('二级部门')].index,['干部类别2']] = ['二级部门经理']
+data['管理主体'] = '授权分支机构'
+data.loc[data[data['发文文号'].str.contains('中投|申万宏源党发|申万宏源证人字')].index,['管理主体']] = ['公司党委']
 
 #匹配出生年月等信息，以便统计提聘引进干部年龄段
 input('请检查文件目录是否正确、确保目录下有以下文件：\n “E:\\1-统计\\%s\\raw\\干部信息明细表（数据清洗）.xlsx” 。按回车键继续... \n' %date)
@@ -92,11 +94,14 @@ pivot_table = pivot_table.reindex(columns=col)  #列索引排序
 pivot_table.fillna(0, inplace=True)
 
 #透视图2
-pivot_table2 = pd.pivot_table(data,index=['调整类别2'],columns=['干部类别2'], values=['姓名'], aggfunc={'姓名':'count'}, dropna=True, fill_value=0, margins=True, margins_name='合计') #去除columns中为空数据、用0填充空数字、展示汇总数all
+pivot_table2 = pd.pivot_table(data,index=['管理主体','调整类别2'],columns=['干部类别2'], values=['姓名'], aggfunc={'姓名':'count'}, dropna=True, fill_value=0, margins=True, margins_name='合计') #去除columns中为空数据、用0填充空数字、展示汇总数all
 pivot_table2.columns = pivot_table2.columns.droplevel(level=0) 
 row = ['引进','提聘','岗位调整','免职降职','合计']
+'''
+多个index执行reindex会报错？
 pivot_table2 = pivot_table2.reindex(row)  #行索引排序（干部类型）
-col = ['公司领导','总部（分）子公司','二级部门经理','营业部干部','合计']
+'''
+col = ['公司领导','总部、分（子）公司','二级部门经理','营业部干部','合计']
 pivot_table2 = pivot_table2.reindex(columns=col)  #列索引排序
 pivot_table2.fillna(0, inplace=True)
 
@@ -119,7 +124,7 @@ jt_total = pivot_table.iloc[8,1] + pivot_table.iloc[8,2]
 jtzq_total = jt_total + zq_total
 
 #关于免职降级的详细统计（人员名单）
-mz_yj = data[(data['调整类别'] == '免职') & (data['备注'].str.contains('另行|另有|赴香港工作|学习|转岗|退休|按规定转岗|违纪|纪委|平级|原职级不变|待定') != True)]
+mz_yj = data[(data['调整类别'] == '免职') & (data['备注'].str.contains('另行|另有|赴香港工作|学习|转岗|退休|按规定转岗|违纪|纪委|平级|原职级不变|待定|兼职变主职') != True)]
 jj_yj = data[(data['调整类别'] == '降级') & (data['备注'].str.contains('另行|另有|赴香港工作|学习|转岗|退休|按规定转岗|违纪|纪委|平级|原职级不变|待定') != True)]
 mz_jw = data[(data['调整类别'] == '免职') & (data['备注'].str.contains('违纪|纪委'))]
 jj_jw = data[(data['调整类别'] == '降级') & (data['备注'].str.contains('违纪|纪委'))]

@@ -88,6 +88,7 @@ ws1.column_dimensions["L"].width = 10
 ws1.column_dimensions["M"].width = 11
 ws1.column_dimensions["N"].hidden = 1
 ws1.column_dimensions["O"].hidden = 1
+ws1.column_dimensions["P"].hidden = 1
 
 #第二张表
 rows2 = ws2.max_row
