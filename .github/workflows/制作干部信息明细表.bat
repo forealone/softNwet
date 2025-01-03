@@ -1,35 +1,44 @@
 @echo off
+setlocal enabledelayedexpansion
 e:
 cd E:\
-cd 22-个人
+cd 23-个人
 
-python pandas1.py
+python MonthlyReport_main.py
 
-echo 执行python脚本(pandas1.py)结束。
+echo 执行python脚本(MonthlyReport_main.py)结束。
 
-pause
+python CadreInfoSheet.py
 
-python pandas2.py
+echo 执行python脚本(CadreInfoSheet.py)结束。
 
-echo 执行python脚本(pandas2.py)结束。
+python CadreChangeSheet.py
 
-pause
+echo 执行python脚本(CadreChangeSheet.py)结束。
 
-python pivot_table.py
+python StatisticalTable.py
 
-echo 执行python脚本(pivot_table.py)结束。
+echo 执行python脚本(StatisticalTable.py)结束。
 
-pause
+python InfoSheetLayout.py
 
-python openpyxl2.py
+echo 执行python脚本(InfoSheetLayout.py)结束。
 
-echo 执行python脚本(openpyxl2.py)结束。
+python ChangeSheetLayout.py
 
-pause
+echo 执行python脚本(ChangeSheetLayout.py)结束。
 
-python openpyxl3.py
+python InfoSheetLite.py
 
-echo 执行python脚本(openpyxl3.py)结束。
+echo 执行python脚本(InfoSheetLite.py)结束。
 
-pause
+python ChangeSheetLite.py
 
+echo 执行python脚本(ChangeSheetLite.py)结束。
+
+set /a seconds=5
+:countdown
+echo !seconds! 秒后关闭...
+timeout /t 1 >nul
+set /a seconds-=1
+if !seconds! gtr 0 goto countdown

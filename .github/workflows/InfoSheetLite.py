@@ -12,7 +12,7 @@ import os
 import re
 from countdown import countdown
 
-print('即将对集团和证券公司干部信息明细表进行格式美化... ')
+print('即将生成干部明细表简表，面向薪酬部等同事发布...')
 seconds = 3
 countdown(seconds)
 
@@ -34,16 +34,28 @@ if os.access(r'E:\1-统计\%s\raw\干部信息明细表（数据清洗）.xlsx' 
 else:
     input('【E:\\1-统计\\%s\\raw\\干部信息明细表（数据清洗）.xlsx】不存在，是否继续？（按回车键继续...） \n' %date)
 
-wb = load_workbook(r'E:\1-统计\%s\raw\干部信息明细表（数据清洗）.xlsx' %date)
+wb1 = load_workbook(r'E:\1-统计\%s\raw\干部信息明细表（数据清洗）.xlsx' %date)
 
-ws1 = wb['干部信息明细表总表']
-ws2 = wb['集团和证券公司领导']
-ws3 = wb['集团和证券总部干部']
-ws4 = wb['分公司干部']
-ws5 = wb['子公司干部']
-ws6 = wb['营业部干部']
-ws7 = wb['其他干部']
-ws8 = wb['转岗人员']
+ws1 = wb1['干部信息明细表总表']
+del wb1['集团和证券公司领导']
+del wb1['集团和证券总部干部']
+del wb1['分公司干部']
+del wb1['子公司干部']
+del wb1['营业部干部']
+del wb1['其他干部']
+del wb1['转岗人员']
+
+print('请检查文件目录是否正确、确保目录下有以下文件：\n “E:\\1-统计\\%s\\raw\\分支机构干部名单（raw）to韩冰.xlsx” ...' %date)
+countdown(seconds)
+if os.access(r'E:\1-统计\%s\raw\分支机构干部名单（raw）to韩冰.xlsx' %date, os.F_OK):
+    pass
+else:
+    input('【E:\\1-统计\\%s\\raw\\分支机构干部名单（raw）to韩冰.xlsx】不存在，是否继续？（按回车键继续...） \n'  %date)
+
+wb2 = load_workbook(r'E:\1-统计\%s\raw\分支机构干部名单（raw）to韩冰.xlsx' %date)
+
+ws2 = wb2['分公司营业部干部明细']
+
 
 #字体
 font1 = Font(name='黑体', color='FFFFFF', size=10, b=True)
@@ -67,7 +79,7 @@ sty1 = NamedStyle(name='sty1', font=font1, fill=fill1,border=border1, alignment=
 sty2 = NamedStyle(name='sty2', font=font2, fill=fill2,border=border2, alignment=ali)
 
 def setup(ws):
-    ws.delete_cols(18, 14) #从18列开始删除，往后删14列（删除之前用pandas匹配的用于统计汇总的数据字段）
+    ws.delete_cols(10, 22) #23年开始制作精简版表格主伐薪酬部等，删除多余信息从10列开始删除，往后删22列
 
     rows = ws.max_row
     cols = ws.max_column
@@ -80,6 +92,7 @@ def setup(ws):
                 ws.row_dimensions[r].height = 27
             else:
                 ws.cell(r, c).style = sty2
+                ws.row_dimensions[r].height = 26
 
     #冻结首行
     ws.freeze_panes = 'A2'
@@ -88,26 +101,14 @@ def setup(ws):
     ws.column_dimensions["B"].width = 18
     ws.column_dimensions["C"].width = 20
     ws.column_dimensions["F"].width = 4
-    ws.column_dimensions["G"].width = 27
+    ws.column_dimensions["G"].width = 54
     ws.column_dimensions["H"].width = 11
     ws.column_dimensions["I"].width = 13
-    ws.column_dimensions["J"].width = 9
-    ws.column_dimensions["K"].width = 9
-    ws.column_dimensions["L"].width = 10
-    ws.column_dimensions["M"].width = 4
-    ws.column_dimensions["O"].width = 4
-    ws.column_dimensions["P"].width = 10
-    ws.column_dimensions["Q"].width = 10
 
 setup(ws1)
 setup(ws2)
-setup(ws3)
-setup(ws4)
-setup(ws5)
-setup(ws6)
-setup(ws7)
-setup(ws8)
 
 print('将输出文件至目录E:\\1-统计\\%s\\raw\\' %date)
 countdown(seconds)
-wb.save(r'E:\\1-统计\\%s\\raw\\集团和证券公司干部信息明细表%s.xlsx' %(date,date))
+wb1.save(r'E:\\1-统计\\%s\\raw\\集团和证券公司干部信息明细表%slite.xlsx' %(date,date))
+wb2.save(r'E:\\1-统计\\%s\\raw\\分支机构干部名单（截止%s末）to韩冰.xlsx' %(date,date))

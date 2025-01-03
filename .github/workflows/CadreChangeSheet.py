@@ -1,29 +1,42 @@
+
 # -*- coding: utf-8 -*-
 """
 Created on Wed Nov  6 16:38:14 2019
 
 @author: User
 """
-input('即将开始制作月报-年度干部变动统计，按回车键继续... \n')
 
 import pandas as pd
-import re
 import os
+import re
+from countdown import countdown
 
-date = input('输入月度统计表的统计年月，用于命名导出文件，(格式：YYYYMM):')
+print('即将开始制作月报-年度干部变动统计... \n')
+seconds = 3
+countdown(seconds)
+
+date = '999999'
+try:
+    with open(r"E:\23-个人\month.txt",'r') as file_to_read:
+        s = file_to_read.read()
+    exec(s)
+except:
+    print('未知异常')
+
 while re.match(r'\d{4}(1[0-2]{1}$|0[0-9]{1}$)', date) == None:
     date = input('输入的年月有误，请按格式重新输入6位年月，(格式：YYYYMM):')
-     
+
 date_y = date[0:4]
 
-input('确保目录下有以下文件：\n “E:\\组织部共享\\干部调整工作台账%s.xlsx” 。按回车键继续... \n' %date_y)
-if os.access('E:\组织部共享\干部调整工作台账%s.xlsx' %date_y, os.F_OK):
+print('确保目录下有以下文件：\n “E:\\1-统计\\%s\\raw\\干部调整工作台账%s.xlsx” ... ' %(date, date_y))
+countdown(seconds)
+if os.access('E:\\1-统计\\%s\\raw\\干部调整工作台账%s.xlsx' %(date, date_y), os.F_OK):
     pass
 else:
-    print('E:\\组织部共享\\干部调整工作台账%s.xlsx' %date_y)
+    print('E:\\1-统计\\%s\\raw\\干部调整工作台账%s.xlsx' %(date, date_y))
     input('上述目录文件不存在，是否继续？（按回车键继续...） \n')
 
-data_io = pd.io.excel.ExcelFile(r'E:\组织部共享\干部调整工作台账%s.xlsx' %date_y)
+data_io = pd.io.excel.ExcelFile(r'E:\1-统计\%s\raw\干部调整工作台账%s.xlsx' %(date, date_y))
 data = pd.read_excel(data_io,sheet_name='干部调整情况', dtype={'工号':str})
 data_io.close()
 
@@ -47,10 +60,11 @@ data.loc[data[data['干部类别'].str.contains('总部|分公司|子公司')].i
 data.loc[data[data['干部类别'].str.contains('营业部')].index,['干部类别2']] = ['营业部干部']
 data.loc[data[data['干部类别'].str.contains('二级部门')].index,['干部类别2']] = ['二级部门经理']
 data['管理主体'] = '授权分支机构'
-data.loc[data[data['发文文号'].str.contains('中投|申万宏源党发|申万宏源证人字')].index,['管理主体']] = ['公司党委']
+data.loc[data[data['发文文号'].str.contains('中投|申万宏源党发|申万宏源证人字|申万宏源证券人发|申万宏源集团任|抄告单')].index,['管理主体']] = ['公司党委']
 
 #匹配出生年月等信息，以便统计提聘引进干部年龄段
-input('请检查文件目录是否正确、确保目录下有以下文件：\n “E:\\1-统计\\%s\\raw\\干部信息明细表（数据清洗）.xlsx” 。按回车键继续... \n' %date)
+print('请检查文件目录是否正确、确保目录下有以下文件：\n “E:\\1-统计\\%s\\raw\\干部信息明细表（数据清洗）.xlsx” ...' %date)
+countdown(seconds)
 if os.access(r'E:\1-统计\%s\raw\干部信息明细表（数据清洗）.xlsx' %date, os.F_OK):
     pass
 else:
@@ -124,8 +138,8 @@ jt_total = pivot_table.iloc[8,1] + pivot_table.iloc[8,2]
 jtzq_total = jt_total + zq_total
 
 #关于免职降级的详细统计（人员名单）
-mz_yj = data[(data['调整类别'] == '免职') & (data['备注'].str.contains('另行|另有|赴香港工作|学习|转岗|退休|按规定转岗|违纪|纪委|平级|原职级不变|待定|兼职变主职') != True)]
-jj_yj = data[(data['调整类别'] == '降级') & (data['备注'].str.contains('另行|另有|赴香港工作|学习|转岗|退休|按规定转岗|违纪|纪委|平级|原职级不变|待定') != True)]
+mz_yj = data[(data['调整类别'] == '免职') & (data['备注'].str.contains('另行|另有|赴香港工作|中投系统|集团内部调动|身故|身体原因|学习|交流|转岗|转任|退休|按规定转岗|违纪|纪委|平级|平移|组织架构改革|原职级不变|待定|兼职变主职|专职书记|个人原因|其他') != True)]
+jj_yj = data[(data['调整类别'] == '降级') & (data['备注'].str.contains('另行|另有|赴香港工作|中投系统|集团内部调动|身故|身体原因|学习|交流|转岗|转任|退休|按规定转岗|违纪|纪委|平级|平移|组织架构改革|原职级不变|待定|兼职变主职|专职书记|个人原因|其他') != True)]
 mz_jw = data[(data['调整类别'] == '免职') & (data['备注'].str.contains('违纪|纪委'))]
 jj_jw = data[(data['调整类别'] == '降级') & (data['备注'].str.contains('违纪|纪委'))]
 
